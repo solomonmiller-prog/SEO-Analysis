@@ -1,2 +1,11 @@
 # Generated audit reports (client-specific)
-reports/
+/output/
+/reports/
+
+# Environment and secrets
+.env
+.env.*
+
+# OS files
+.DS_Store
+Thumbs.db
