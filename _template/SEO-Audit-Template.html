@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEO Audit Report - {{CLIENT_NAME}}</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+  :root {
+    --ls-blue: #285aff;
+    --ls-blue-dark: #1a3fcc;
+    --ls-blue-light: #EAEFFF;
+    --ls-blue-mid: #6793EE;
+    --ls-text: #4a4a4a;
+    --ls-text-secondary: #757575;
+    --ls-text-muted: #9b9b9b;
+    --ls-border: #ececec;
+    --ls-bg-light: #f8f8f8;
+    --ls-white: #ffffff;
+    --ls-red: #f16159;
+    --ls-yellow: #ffc414;
+    --ls-green: #40A499;
+    --ls-purple: #B164FF;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--ls-text);
+    line-height: 1.5;
+    font-size: 11px;
+    background: var(--ls-white);
+  }
+
+  @page {
+    size: A4;
+    margin: 15mm 18mm 20mm 18mm;
+  }
+
+  @media print {
+    body { font-size: 10px; }
+    .page-break { page-break-before: always; }
+    .no-break { page-break-inside: avoid; }
+    .cover-page { page-break-after: always; }
+  }
+
+  /* ===== COVER PAGE ===== */
+  .cover-page {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 60px 50px;
+    background: linear-gradient(135deg, #285aff 0%, #6793EE 50%, #B4DAFF 100%);
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cover-page::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    right: -100px;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+  }
+
+  .cover-page::after {
+    content: '';
+    position: absolute;
+    bottom: -150px;
+    left: -80px;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+
+  .cover-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    color: white;
+    padding: 6px 16px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cover-title {
+    font-size: 42px;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 12px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cover-subtitle {
+    font-size: 20px;
+    font-weight: 400;
+    opacity: 0.9;
+    margin-bottom: 40px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cover-meta {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+  }
+
+  .cover-meta-item {
+    background: rgba(255,255,255,0.15);
+    padding: 14px 20px;
+    border-radius: 12px;
+    min-width: 160px;
+  }
+
+  .cover-meta-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    opacity: 0.8;
+    margin-bottom: 4px;
+  }
+
+  .cover-meta-value {
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .cover-footer {
+    position: absolute;
+    bottom: 40px;
+    left: 50px;
+    right: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1;
+  }
+
+  .cover-logo {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
+
+  .cover-logo span {
+    font-weight: 400;
+    opacity: 0.8;
+  }
+
+  /* ===== SECTION STYLES ===== */
+  .section-header {
+    background: linear-gradient(135deg, var(--ls-blue) 0%, var(--ls-blue-mid) 100%);
+    color: white;
+    padding: 20px 24px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    margin-top: 10px;
+  }
+
+  .section-header h2 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 3px;
+  }
+
+  .section-header p {
+    font-size: 11px;
+    opacity: 0.85;
+  }
+
+  .subsection {
+    margin-bottom: 20px;
+  }
+
+  .subsection h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ls-blue);
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--ls-blue-light);
+  }
+
+  .subsection h4 {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ls-text);
+    margin-bottom: 6px;
+    margin-top: 12px;
+  }
+
+  /* ===== SCORE CARDS ===== */
+  .score-overview {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  .score-card {
+    flex: 1;
+    min-width: 150px;
+    background: var(--ls-white);
+    border: 1px solid var(--ls-border);
+    border-radius: 12px;
+    padding: 18px;
+    text-align: center;
+  }
+
+  .score-card.main {
+    background: linear-gradient(135deg, var(--ls-blue) 0%, var(--ls-blue-mid) 100%);
+    color: white;
+    border: none;
+    min-width: 180px;
+  }
+
+  .score-number {
+    font-size: 36px;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+
+  .score-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+  }
+
+  .score-card:not(.main) .score-label {
+    color: var(--ls-text-secondary);
+  }
+
+  .score-bar {
+    height: 6px;
+    background: var(--ls-border);
+    border-radius: 100px;
+    margin-top: 8px;
+    overflow: hidden;
+  }
+
+  .score-bar-fill {
+    height: 100%;
+    border-radius: 100px;
+    transition: width 0.5s ease;
+  }
+
+  .score-bar-fill.blue { background: var(--ls-blue); }
+  .score-bar-fill.green { background: var(--ls-green); }
+  .score-bar-fill.yellow { background: var(--ls-yellow); }
+  .score-bar-fill.red { background: var(--ls-red); }
+
+  /* ===== TABLES ===== */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 16px;
+    font-size: 10.5px;
+  }
+
+  th {
+    background: var(--ls-bg-light);
+    color: var(--ls-text);
+    font-weight: 600;
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 2px solid var(--ls-border);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  td {
+    padding: 7px 10px;
+    border-bottom: 1px solid var(--ls-border);
+    vertical-align: top;
+  }
+
+  tr:last-child td { border-bottom: none; }
+
+  /* ===== BADGES ===== */
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 100px;
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .badge-pass { background: #e8f5e9; color: #2e7d32; }
+  .badge-warn { background: #fff8e1; color: #f57f17; }
+  .badge-fail { background: #ffebee; color: #c62828; }
+  .badge-info { background: var(--ls-blue-light); color: var(--ls-blue); }
+  .badge-critical { background: #c62828; color: white; }
+  .badge-high { background: var(--ls-red); color: white; }
+  .badge-medium { background: var(--ls-yellow); color: #4a4a4a; }
+  .badge-low { background: var(--ls-blue-light); color: var(--ls-blue); }
+
+  /* ===== PRIORITY TAGS ===== */
+  .priority-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  .priority-critical { background: #c62828; color: white; }
+  .priority-high { background: var(--ls-red); color: white; }
+  .priority-medium { background: var(--ls-yellow); color: #4a4a4a; }
+  .priority-low { background: var(--ls-blue-light); color: var(--ls-blue); }
+
+  /* ===== CARDS ===== */
+  .card {
+    background: var(--ls-white);
+    border: 1px solid var(--ls-border);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+
+  .card-blue {
+    background: var(--ls-blue-light);
+    border-color: #d0d9ff;
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+  }
+
+  .card-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ls-text);
+  }
+
+  .card-body {
+    font-size: 11px;
+    color: var(--ls-text-secondary);
+    line-height: 1.5;
+  }
+
+  /* ===== ACTION ITEMS ===== */
+  .action-item {
+    background: var(--ls-white);
+    border: 1px solid var(--ls-border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    border-left: 4px solid var(--ls-border);
+  }
+
+  .action-item.critical { border-left-color: #c62828; }
+  .action-item.high { border-left-color: var(--ls-red); }
+  .action-item.medium { border-left-color: var(--ls-yellow); }
+  .action-item.low { border-left-color: var(--ls-blue); }
+
+  .action-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+
+  .action-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ls-text);
+  }
+
+  .action-meta {
+    display: flex;
+    gap: 8px;
+    font-size: 9px;
+  }
+
+  .action-body {
+    font-size: 10.5px;
+    color: var(--ls-text-secondary);
+    line-height: 1.5;
+  }
+
+  .action-body code {
+    background: var(--ls-bg-light);
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    font-size: 9.5px;
+  }
+
+  /* ===== LISTS ===== */
+  .check-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .check-list li {
+    padding: 5px 0;
+    padding-left: 20px;
+    position: relative;
+    font-size: 11px;
+    border-bottom: 1px solid var(--ls-border);
+  }
+
+  .check-list li:last-child { border-bottom: none; }
+
+  .check-list li::before {
+    position: absolute;
+    left: 0;
+    font-size: 12px;
+  }
+
+  .check-list li.pass::before { content: '\2713'; color: var(--ls-green); }
+  .check-list li.fail::before { content: '\2717'; color: var(--ls-red); }
+  .check-list li.warn::before { content: '\26A0'; color: #f57f17; font-size: 11px; }
+
+  /* ===== CODE BLOCKS ===== */
+  pre {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 9.5px;
+    line-height: 1.5;
+    overflow-x: auto;
+    margin: 8px 0;
+  }
+
+  /* ===== UTILITIES ===== */
+  .text-blue { color: var(--ls-blue); }
+  .text-red { color: var(--ls-red); }
+  .text-green { color: var(--ls-green); }
+  .text-muted { color: var(--ls-text-muted); }
+  .text-small { font-size: 10px; }
+  .text-center { text-align: center; }
+  .font-bold { font-weight: 700; }
+  .mt-sm { margin-top: 8px; }
+  .mt-md { margin-top: 16px; }
+  .mb-sm { margin-bottom: 8px; }
+  .mb-md { margin-bottom: 16px; }
+
+  .flex-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .flex-col {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--ls-border);
+    margin: 16px 0;
+  }
+
+  /* ===== PAGE FOOTER ===== */
+  .page-footer {
+    text-align: center;
+    padding: 20px 0 10px;
+    color: var(--ls-text-muted);
+    font-size: 9px;
+    border-top: 1px solid var(--ls-border);
+    margin-top: 30px;
+  }
+
+  /* ===== PILLAR HEADERS ===== */
+  .pillar-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    border-radius: 10px;
+    margin-bottom: 16px;
+  }
+
+  .pillar-header.tech {
+    background: linear-gradient(135deg, #285aff 0%, #6793EE 100%);
+    color: white;
+  }
+
+  .pillar-header.content {
+    background: linear-gradient(135deg, #40A499 0%, #6BC4B8 100%);
+    color: white;
+  }
+
+  .pillar-header.authority {
+    background: linear-gradient(135deg, #B164FF 0%, #C98FFF 100%);
+    color: white;
+  }
+
+  .pillar-icon {
+    font-size: 22px;
+    width: 36px;
+    height: 36px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .pillar-info h3 {
+    font-size: 14px;
+    font-weight: 700;
+    border: none;
+    padding: 0;
+    margin: 0;
+    color: white;
+  }
+
+  .pillar-info p {
+    font-size: 10px;
+    opacity: 0.85;
+  }
+
+  .pillar-score {
+    margin-left: auto;
+    font-size: 28px;
+    font-weight: 800;
+  }
+
+  .pillar-score span {
+    font-size: 14px;
+    font-weight: 400;
+    opacity: 0.7;
+  }
+
+  /* ===== QUICK WIN CARDS ===== */
+  .quick-wins {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .quick-win {
+    background: var(--ls-blue-light);
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+
+  .quick-win-num {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--ls-blue);
+    margin-bottom: 2px;
+  }
+
+  .quick-win-text {
+    font-size: 10.5px;
+    color: var(--ls-text);
+    font-weight: 500;
+  }
+</style>
+</head>
+<body>
+
+<!-- ==========================================================================
+     COVER PAGE
+     ========================================================================== -->
+<div class="cover-page">
+  <div class="cover-badge">SEO Audit Report</div>
+  <h1 class="cover-title">{{CLIENT_NAME_LINE1}}<br>{{CLIENT_NAME_LINE2}}</h1>
+  <p class="cover-subtitle">Comprehensive SEO Health Assessment</p>
+
+  <!-- HERO SCORE CIRCLE -->
+  <div class="cover-score-hero" style="position: relative; z-index: 1; margin-bottom: 36px; display: flex; align-items: center; gap: 28px;">
+    <div style="width: 160px; height: 160px; border-radius: 50%; background: rgba(255,255,255,0.18); display: flex; align-items: center; justify-content: center; border: 6px solid rgba(255,255,255,0.4); position: relative;">
+      <div style="text-align: center;">
+        <div style="font-size: 72px; font-weight: 900; line-height: 1; letter-spacing: -3px;">{{OVERALL_SCORE}}</div>
+        <div style="font-size: 13px; font-weight: 600; opacity: 0.9; letter-spacing: 1px; text-transform: uppercase;">out of 100</div>
+      </div>
+    </div>
+    <div style="flex: 1;">
+      <div style="font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; opacity: 0.85; margin-bottom: 6px;">SEO Health Score</div>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <div style="background: rgba(255,255,255,0.15); padding: 8px 14px; border-radius: 8px; font-size: 12px;">
+          <span style="opacity: 0.7;">Technical</span> <strong>{{TECHNICAL_SCORE}}</strong>
+        </div>
+        <div style="background: rgba(255,255,255,0.15); padding: 8px 14px; border-radius: 8px; font-size: 12px;">
+          <span style="opacity: 0.7;">Content</span> <strong>{{CONTENT_SCORE}}</strong>
+        </div>
+        <div style="background: rgba(255,255,255,0.15); padding: 8px 14px; border-radius: 8px; font-size: 12px;">
+          <span style="opacity: 0.7;">Authority</span> <strong>{{AUTHORITY_SCORE}}</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- META INFO CARDS -->
+  <div class="cover-meta">
+    <div class="cover-meta-item">
+      <div class="cover-meta-label">Website</div>
+      <div class="cover-meta-value">{{DOMAIN}}</div>
+    </div>
+    <div class="cover-meta-item">
+      <div class="cover-meta-label">Date</div>
+      <div class="cover-meta-value">{{AUDIT_DATE}}</div>
+    </div>
+    <div class="cover-meta-item">
+      <div class="cover-meta-label">Pages Analysed</div>
+      <div class="cover-meta-value">{{PAGES_COUNT}}</div>
+    </div>
+  </div>
+
+  <div class="cover-footer">
+    <div class="cover-logo">Localsearch <span>| Digital Marketing</span></div>
+    <div style="font-size: 10px; opacity: 0.7;">Confidential</div>
+  </div>
+</div>
+
+<!-- ==========================================================================
+     EXECUTIVE SUMMARY
+     ========================================================================== -->
+<div class="page-break"></div>
+
+<div class="section-header">
+  <h2>Executive Summary</h2>
+  <p>Overall SEO health assessment with key findings and recommendations</p>
+</div>
+
+<!-- PILLAR SCORE CARDS (3 pillars + overall last) -->
+<div class="score-overview">
+  <div class="score-card">
+    <div class="score-number text-blue">{{TECHNICAL_SCORE}}</div>
+    <div class="score-label">Technical Foundation</div>
+    <div class="score-bar"><div class="score-bar-fill blue" style="width: {{TECHNICAL_SCORE}}%"></div></div>
+  </div>
+  <div class="score-card">
+    <div class="score-number" style="color: var(--ls-green)">{{CONTENT_SCORE}}</div>
+    <div class="score-label">Content & On-Page</div>
+    <div class="score-bar"><div class="score-bar-fill green" style="width: {{CONTENT_SCORE}}%"></div></div>
+  </div>
+  <div class="score-card">
+    <div class="score-number" style="color: var(--ls-purple)">{{AUTHORITY_SCORE}}</div>
+    <div class="score-label">Authority & Off-Page</div>
+    <div class="score-bar"><div class="score-bar-fill" style="width: {{AUTHORITY_SCORE}}%; background: var(--ls-purple)"></div></div>
+  </div>
+  <div class="score-card main">
+    <div class="score-number">{{OVERALL_SCORE}}</div>
+    <div class="score-label">Overall Health Score</div>
+  </div>
+</div>
+
+<!-- CRITICAL ISSUES + QUICK WINS (side by side) -->
+<div class="flex-row">
+  <div class="flex-col">
+    <div class="card" style="border-left: 4px solid var(--ls-red);">
+      <div class="card-title mb-sm">Top 5 Critical Issues</div>
+      <ol style="padding-left: 16px; font-size: 10.5px; color: var(--ls-text-secondary); line-height: 1.7;">
+        <li><strong>{{ISSUE_1}}</strong></li>
+        <li><strong>{{ISSUE_2}}</strong></li>
+        <li><strong>{{ISSUE_3}}</strong></li>
+        <li><strong>{{ISSUE_4}}</strong></li>
+        <li><strong>{{ISSUE_5}}</strong></li>
+      </ol>
+    </div>
+  </div>
+  <div class="flex-col">
+    <div class="card card-blue">
+      <div class="card-title mb-sm" style="color: var(--ls-blue);">Top 5 Quick Wins</div>
+      <ol style="padding-left: 16px; font-size: 10.5px; color: var(--ls-text-secondary); line-height: 1.7;">
+        <li>{{WIN_1}}</li>
+        <li>{{WIN_2}}</li>
+        <li>{{WIN_3}}</li>
+        <li>{{WIN_4}}</li>
+        <li>{{WIN_5}}</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<!-- SITE OVERVIEW TABLE -->
+<div class="card" style="margin-top: 4px;">
+  <div class="card-title mb-sm">Site Overview</div>
+  <table>
+    <tr><td style="width: 140px; font-weight: 600;">Business Type</td><td>{{BUSINESS_TYPE}}</td></tr>
+    <tr><td style="font-weight: 600;">Location</td><td>{{LOCATION}}</td></tr>
+    <tr><td style="font-weight: 600;">Platform</td><td>{{PLATFORM}}</td></tr>
+    <tr><td style="font-weight: 600;">Pages in Sitemap</td><td>{{PAGES_COUNT}}</td></tr>
+    <tr><td style="font-weight: 600;">Phone</td><td>{{PHONE}}</td></tr>
+    <tr><td style="font-weight: 600;">Email</td><td>{{EMAIL}}</td></tr>
+  </table>
+</div>
+
+<!-- ==========================================================================
+     PILLAR 1: TECHNICAL FOUNDATION
+     ========================================================================== -->
+<div class="page-break"></div>
+
+<div class="pillar-header tech">
+  <div class="pillar-icon">&#9881;</div>
+  <div class="pillar-info">
+    <h3>Pillar 1 &mdash; Technical Foundation</h3>
+    <p>Crawlability, indexability, performance &amp; security</p>
+  </div>
+  <div class="pillar-score">{{TECHNICAL_SCORE}}<span>/100</span></div>
+</div>
+
+<!-- EXAMPLE: Crawlability check table -->
+<div class="subsection no-break">
+  <h3>Crawlability & Indexability</h3>
+  <table>
+    <thead>
+      <tr><th style="width: 200px;">Check</th><th style="width: 80px;">Status</th><th>Notes</th></tr>
+    </thead>
+    <tbody>
+      <!-- Use badge-pass, badge-warn, or badge-fail -->
+      <tr><td>robots.txt</td><td><span class="badge badge-pass">PASS</span></td><td>Description here</td></tr>
+      <tr><td>XML Sitemap</td><td><span class="badge badge-warn">PARTIAL</span></td><td>Description here</td></tr>
+      <tr><td>HTTPS</td><td><span class="badge badge-pass">PASS</span></td><td>Description here</td></tr>
+      <tr><td>Canonical Tags</td><td><span class="badge badge-pass">PASS</span></td><td>Description here</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- EXAMPLE: Security headers -->
+<div class="subsection no-break">
+  <h3>Security Headers</h3>
+  <table>
+    <thead>
+      <tr><th style="width: 250px;">Header</th><th style="width: 80px;">Status</th><th>Value</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Strict-Transport-Security</td><td><span class="badge badge-pass">PASS</span></td><td>Value here</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- EXAMPLE: Performance metrics -->
+<div class="subsection no-break">
+  <h3>Performance</h3>
+  <table>
+    <thead>
+      <tr><th>Metric</th><th>Value</th><th style="width: 80px;">Rating</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Homepage HTML Size</td><td>XXX KB</td><td><span class="badge badge-fail">POOR</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ==========================================================================
+     PILLAR 2: CONTENT & ON-PAGE
+     ========================================================================== -->
+<div class="page-break"></div>
+
+<div class="pillar-header content">
+  <div class="pillar-icon">&#9998;</div>
+  <div class="pillar-info">
+    <h3>Pillar 2 &mdash; Content & On-Page</h3>
+    <p>Title tags, meta descriptions, headings, schema, E-E-A-T &amp; images</p>
+  </div>
+  <div class="pillar-score">{{CONTENT_SCORE}}<span>/100</span></div>
+</div>
+
+<!-- EXAMPLE: Title tags table -->
+<div class="subsection no-break">
+  <h3>Title Tags</h3>
+  <table>
+    <thead>
+      <tr><th>Page</th><th>Title</th><th style="width: 50px;">Len</th><th style="width: 60px;">Rating</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>/</td><td>Page title here</td><td>XX</td><td><span class="badge badge-pass">GOOD</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- EXAMPLE: E-E-A-T strengths/weaknesses (side by side) -->
+<div class="subsection no-break">
+  <h3>Content Quality & E-E-A-T</h3>
+  <div class="flex-row">
+    <div class="flex-col">
+      <h4 style="color: var(--ls-green);">Strengths</h4>
+      <ul class="check-list">
+        <li class="pass">Strength item here</li>
+      </ul>
+    </div>
+    <div class="flex-col">
+      <h4 style="color: var(--ls-red);">Weaknesses</h4>
+      <ul class="check-list">
+        <li class="fail">Weakness item here</li>
+        <li class="warn">Warning item here</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- EXAMPLE: Schema table -->
+<div class="subsection no-break">
+  <h3>Schema & Structured Data</h3>
+  <table>
+    <thead>
+      <tr><th>Schema Type</th><th style="width: 80px;">Present?</th><th>Pages</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>WebSite</td><td><span class="badge badge-pass">YES</span></td><td>Homepage</td></tr>
+      <tr><td>LocalBusiness</td><td><span class="badge badge-fail">NO</span></td><td>&mdash;</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ==========================================================================
+     PILLAR 3: AUTHORITY & OFF-PAGE
+     ========================================================================== -->
+<div class="page-break"></div>
+
+<div class="pillar-header authority">
+  <div class="pillar-icon">&#9733;</div>
+  <div class="pillar-info">
+    <h3>Pillar 3 &mdash; Authority & Off-Page</h3>
+    <p>Backlinks, AI search visibility, local signals &amp; brand presence</p>
+  </div>
+  <div class="pillar-score">{{AUTHORITY_SCORE}}<span>/100</span></div>
+</div>
+
+<!-- EXAMPLE: Checklist -->
+<div class="subsection no-break">
+  <h3>Backlink Profile & Link Equity</h3>
+  <ul class="check-list">
+    <li class="pass">Positive finding here</li>
+    <li class="fail">Negative finding here</li>
+    <li class="warn">Warning finding here</li>
+  </ul>
+</div>
+
+<!-- ==========================================================================
+     SCORING BREAKDOWN
+     ========================================================================== -->
+<div class="page-break"></div>
+
+<div class="section-header">
+  <h2>Scoring Breakdown</h2>
+  <p>Weighted sub-category scores across all three pillars</p>
+</div>
+
+<table>
+  <thead>
+    <tr><th>Pillar / Sub-category</th><th style="width: 60px;">Weight</th><th style="width: 60px;">Score</th><th style="width: 70px;">Weighted</th></tr>
+  </thead>
+  <tbody>
+    <tr style="background: var(--ls-blue-light);"><td colspan="4" style="font-weight: 700; color: var(--ls-blue);">Pillar 1 &mdash; Technical Foundation (35%)</td></tr>
+    <tr><td style="padding-left: 24px;">Crawlability & Indexability</td><td>15%</td><td>XX</td><td>X.X</td></tr>
+    <tr><td style="padding-left: 24px;">Performance (Core Web Vitals)</td><td>10%</td><td>XX</td><td>X.X</td></tr>
+    <tr><td style="padding-left: 24px;">Mobile & JS Rendering</td><td>10%</td><td>XX</td><td>X.X</td></tr>
+    <tr style="background: #e8f5e9;"><td colspan="4" style="font-weight: 700; color: var(--ls-green);">Pillar 2 &mdash; Content & On-Page (40%)</td></tr>
+    <tr><td style="padding-left: 24px;">Content Quality & E-E-A-T</td><td>15%</td><td>XX</td><td>X.X</td></tr>
+    <tr><td style="padding-left: 24px;">On-Page SEO</td><td>10%</td><td>XX</td><td>X.X</td></tr>
+    <tr><td style="padding-left: 24px;">Schema & Structured Data</td><td>8%</td><td>XX</td><td>X.X</td></tr>
+    <tr><td style="padding-left: 24px;">Images & Media</td><td>7%</td><td>XX</td><td>X.X</td></tr>
+    <tr style="background: #f3e5f5;"><td colspan="4" style="font-weight: 700; color: var(--ls-purple);">Pillar 3 &mdash; Authority & Off-Page (25%)</td></tr>
+    <tr><td style="padding-left: 24px;">Backlink Profile & Link Equity</td><td>12%</td><td>XX</td><td>X.X</td></tr>
+    <tr><td style="padding-left: 24px;">AI Search / GEO Visibility</td><td>8%</td><td>XX</td><td>X.X</td></tr>
+    <tr><td style="padding-left: 24px;">Local & Brand Signals</td><td>5%</td><td>XX</td><td>X.X</td></tr>
+    <tr style="border-top: 2px solid var(--ls-text); font-weight: 700;"><td>Overall SEO Health Score</td><td>100%</td><td colspan="2" style="font-size: 14px; color: var(--ls-blue);">{{OVERALL_SCORE}} / 100</td></tr>
+  </tbody>
+</table>
+
+<!-- ==========================================================================
+     ACTION PLAN
+     ========================================================================== -->
+<div class="page-break"></div>
+
+<div class="section-header" style="background: linear-gradient(135deg, #c62828 0%, #f16159 100%);">
+  <h2>Action Plan</h2>
+  <p>Prioritised recommendations &mdash; Critical &rarr; High &rarr; Medium &rarr; Low</p>
+</div>
+
+<!-- CRITICAL ITEMS -->
+<div style="margin-bottom: 8px;">
+  <span class="priority-tag priority-critical">CRITICAL &mdash; Fix Immediately</span>
+</div>
+
+<div class="action-item critical no-break">
+  <div class="action-header">
+    <div class="action-title">1. Action Title Here</div>
+    <div class="action-meta">
+      <!-- Pillar badge: badge-info (Content), or use custom colours for Authority -->
+      <span class="badge badge-info">Content & On-Page</span>
+      <!-- Owner badge -->
+      <span class="badge" style="background: var(--ls-bg-light);">Dev/Localsearch</span>
+    </div>
+  </div>
+  <div class="action-body">Description of the action item and why it matters.</div>
+</div>
+
+<!-- HIGH ITEMS -->
+<div style="margin-bottom: 8px; margin-top: 16px;">
+  <span class="priority-tag priority-high">HIGH &mdash; Fix Within 1 Week</span>
+</div>
+
+<div class="action-item high no-break">
+  <div class="action-header">
+    <div class="action-title">X. Action Title Here</div>
+    <div class="action-meta">
+      <span class="badge badge-info">Technical</span>
+      <span class="badge" style="background: var(--ls-bg-light);">Owner</span>
+    </div>
+  </div>
+  <div class="action-body">Description here.</div>
+</div>
+
+<!-- MEDIUM ITEMS -->
+<div style="margin-bottom: 8px; margin-top: 16px;">
+  <span class="priority-tag priority-medium">MEDIUM &mdash; Fix Within 1 Month</span>
+</div>
+
+<div class="action-item medium no-break">
+  <div class="action-header">
+    <div class="action-title">X. Action Title Here</div>
+    <div class="action-meta">
+      <span class="badge badge-info">Content & On-Page</span>
+      <span class="badge" style="background: var(--ls-bg-light);">Owner</span>
+    </div>
+  </div>
+  <div class="action-body">Description here.</div>
+</div>
+
+<!-- LOW ITEMS -->
+<div style="margin-bottom: 8px; margin-top: 16px;">
+  <span class="priority-tag priority-low">LOW &mdash; Backlog</span>
+</div>
+
+<div class="action-item low no-break">
+  <div class="action-header">
+    <div class="action-title">X. Action Title Here</div>
+    <div class="action-meta"><span class="badge badge-info">Technical</span></div>
+  </div>
+  <div class="action-body">Description here.</div>
+</div>
+
+<!-- ==========================================================================
+     IMPLEMENTATION GUIDE
+     ========================================================================== -->
+<div class="page-break"></div>
+
+<div class="section-header" style="background: linear-gradient(135deg, #1a3fcc 0%, #285aff 50%, #40A499 100%);">
+  <h2>Implementation Guide</h2>
+  <p>Step-by-step instructions for the highest-impact fixes</p>
+</div>
+
+<!-- GUIDE ITEM TEMPLATE — Repeat for each key fix -->
+<div class="subsection">
+  <h3>1. Guide Title (Action #X)</h3>
+  <div class="card no-break">
+    <div class="card-title mb-sm">Steps in {{PLATFORM}}</div>
+    <div class="card-body">
+      <ol style="padding-left: 16px; line-height: 1.8;">
+        <li>Step one</li>
+        <li>Step two</li>
+        <li>Step three</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<!-- GUIDE ITEM WITH CODE BLOCK — Use for schema / robots.txt / technical fixes -->
+<div class="subsection">
+  <h3>2. Guide Title with Code (Action #X)</h3>
+  <div class="card no-break">
+    <div class="card-title mb-sm">Steps</div>
+    <div class="card-body">
+      <ol style="padding-left: 16px; line-height: 1.8;">
+        <li>Step one</li>
+        <li>Paste the following code:</li>
+      </ol>
+      <pre>Code block here</pre>
+      <ol start="3" style="padding-left: 16px; line-height: 1.8;">
+        <li>Save and publish</li>
+        <li>Validate at relevant tool</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<!-- GUIDE ITEM WITH TABLE — Use for meta descriptions / H1 recommendations per page -->
+<div class="subsection">
+  <h3>3. Guide Title with Per-Page Recommendations (Action #X)</h3>
+  <div class="card no-break">
+    <div class="card-title mb-sm">Steps</div>
+    <div class="card-body">
+      <ol style="padding-left: 16px; line-height: 1.8;">
+        <li>Step one</li>
+        <li>Update each page with the recommended text below</li>
+      </ol>
+      <p class="mt-sm" style="font-weight: 600;">Recommended text:</p>
+      <table style="margin-top: 6px;">
+        <tr><td style="width: 120px; font-weight: 600;">Page Name</td><td>Recommended text here</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- IMPLEMENTATION TIMELINE -->
+<div class="subsection">
+  <h3>Implementation Timeline &amp; Expected Results</h3>
+  <table>
+    <thead>
+      <tr><th style="width: 100px;">Timeline</th><th>Tasks</th><th style="width: 90px;">Expected Score</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="font-weight: 700;">Week 1</td>
+        <td>Critical fixes (Actions #1&ndash;5)</td>
+        <td style="font-weight: 700; color: var(--ls-blue); font-size: 14px;">XX&ndash;XX</td>
+      </tr>
+      <tr>
+        <td style="font-weight: 700;">Week 2&ndash;4</td>
+        <td>High &amp; medium priority fixes</td>
+        <td style="font-weight: 700; color: var(--ls-blue); font-size: 14px;">XX&ndash;XX</td>
+      </tr>
+      <tr>
+        <td style="font-weight: 700;">Month 2&ndash;3</td>
+        <td>Content strategy &amp; authority building</td>
+        <td style="font-weight: 700; color: var(--ls-blue); font-size: 14px;">XX&ndash;XX</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- NEED HELP CTA -->
+<div class="card no-break" style="border-left: 4px solid var(--ls-blue); margin-top: 16px;">
+  <div class="card-title mb-sm" style="color: var(--ls-blue);">Need Help Implementing These Changes?</div>
+  <div class="card-body" style="line-height: 1.8;">
+    Localsearch can handle the full implementation for you &mdash; from technical fixes and schema markup to content writing and ongoing SEO management. Contact your Localsearch representative to discuss a tailored plan for your business.
+  </div>
+</div>
+
+<!-- ==========================================================================
+     REPORT FOOTER
+     ========================================================================== -->
+<div class="page-footer">
+  <p><strong>Localsearch</strong> | SEO Audit Report | {{DOMAIN}} | {{AUDIT_DATE}}</p>
+  <p style="margin-top: 4px;">This report was generated using automated crawling and manual analysis. Findings are based on publicly accessible data at time of audit.</p>
+</div>
+
+</body>
+</html>
