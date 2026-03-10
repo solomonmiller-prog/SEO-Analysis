@@ -2,12 +2,14 @@
 name: seo-audit
 description: >
   Full website SEO audit with parallel subagent delegation. Crawls up to 500
-  pages, detects business type, delegates to 7 specialists, generates health
-  score. Use when user says "audit", "full SEO check", "full site analysis",
-  "analyze my site", "website health check", "site review", "complete SEO
-  review", "website audit", "check my website", or "SEO report". Always use
-  this skill when a user provides a URL and asks for a comprehensive or full
-  analysis — even if they don't use the word "audit" explicitly.
+  pages, detects business type, delegates to 9 specialists (including fact-
+  checking and UX analysis), generates health score, then runs independent
+  QA validation before delivery. Use when user says "audit", "full SEO check",
+  "full site analysis", "analyze my site", "website health check", "site
+  review", "complete SEO review", "website audit", "check my website", or
+  "SEO report". Always use this skill when a user provides a URL and asks
+  for a comprehensive or full analysis — even if they don't use the word
+  "audit" explicitly.
 ---
 
 # Full Website SEO Audit
@@ -17,7 +19,7 @@ description: >
 1. **Fetch homepage** — use `scripts/fetch_page.py` to retrieve HTML
 2. **Detect business type** — analyze homepage signals per seo orchestrator
 3. **Crawl site** — follow internal links up to 500 pages, respect robots.txt
-4. **Delegate to subagents** (if available, otherwise run inline sequentially):
+4. **Delegate to subagents — Phase 1: Audit** (parallel where possible):
    - `seo-technical` — robots.txt, sitemaps, canonicals, Core Web Vitals, security headers
    - `seo-content` — E-E-A-T, readability, thin content, AI citation readiness
    - `seo-schema` — detection, validation, generation recommendations
@@ -25,8 +27,16 @@ description: >
    - `seo-performance` — LCP, INP, CLS measurements
    - `seo-visual` — screenshots, mobile testing, above-fold analysis
    - `seo-geo` — AI Overviews, ChatGPT/Perplexity visibility, llms.txt, GEO signals
+   - `seo-factcheck` — verify factual claims, measurements, statistics, and contextual accuracy
+   - `seo-ux` — navigation, visual hierarchy, CTAs, accessibility (WCAG 2.2 AA), mobile usability
 5. **Score** — aggregate into SEO Health Score (0-100)
 6. **Report** — generate prioritized action plan
+7. **Phase 2: Quality Assurance** (runs AFTER the report is drafted):
+   - `seo-validate` — independently re-checks a sample of findings against the live site, verifies score calculations, detects contradictions between report sections, and confirms recommendations align with actual issues found
+   - Produces a **Report Confidence Score** and a PASS / PASS WITH CORRECTIONS / FAIL verdict
+   - If FAIL: revise the report to fix identified issues before delivery
+   - If PASS WITH CORRECTIONS: apply the listed corrections, then deliver
+   - If PASS: report is ready for delivery
 
 ## Platform-Specific Content Extraction
 
@@ -62,8 +72,11 @@ Delay between requests: 1 second
 
 ## Output Files
 
-- `FULL-AUDIT-REPORT.md` — Comprehensive findings
+- `FULL-AUDIT-REPORT.md` — Comprehensive findings (includes QA validation section)
 - `ACTION-PLAN.md` — Prioritized recommendations (Critical → High → Medium → Low)
+- `FACT-CHECK-REPORT.md` — Detailed fact-checking results with corrections table
+- `UX-REPORT.md` — UX/UI analysis with accessibility findings
+- `VALIDATION-REPORT.md` — Independent QA results with confidence score and verdict
 - `screenshots/` — Desktop + mobile captures (if Playwright available)
 
 ## Scoring Weights
@@ -76,13 +89,20 @@ SEO Health Score is their weighted aggregate.
 | **1 — Technical Foundation** | Crawlability & Indexability | 15% | **35%** |
 | | Performance (Core Web Vitals) | 10% | |
 | | Mobile & JavaScript Rendering | 10% | |
-| **2 — Content & On-Page** | Content Quality & E-E-A-T | 15% | **40%** |
-| | On-Page SEO | 10% | |
-| | Schema & Structured Data | 8% | |
-| | Images & Media | 7% | |
+| **2 — Content & On-Page** | Content Quality & E-E-A-T | 12% | **40%** |
+| | Factual Accuracy & Contextual Relevance | 5% | |
+| | On-Page SEO | 8% | |
+| | Schema & Structured Data | 6% | |
+| | Images & Media | 5% | |
+| | UX & Usability | 4% | |
 | **3 — Authority & Off-Page** | Backlink Profile & Link Equity | 12% | **25%** |
 | | AI Search / GEO Visibility | 8% | |
 | | Local & Brand Signals | 5% | |
+| **QA (not scored)** | Report Validation | — | — |
+
+> **Note:** Factual Accuracy and UX scores feed into Pillar 2. The Report
+> Validation step does not contribute to the Health Score — it validates
+> the score itself.
 
 ## Report Structure
 
@@ -159,6 +179,20 @@ SEO Health Score is their weighted aggregate.
 - CLS-causing images (no dimensions)
 - Lazy loading compliance
 
+#### Factual Accuracy & Contextual Relevance
+- Claims verified: X total (X correct, X incorrect, X unverifiable)
+- Critical errors (measurements, statistics, regulatory references)
+- Contextual issues (content-page mismatch, template artifacts, terminology misuse)
+- Corrections table with sources
+
+#### UX & Usability
+- Navigation & information architecture assessment
+- Visual hierarchy & layout effectiveness
+- CTA visibility and conversion path analysis
+- Accessibility compliance (WCAG 2.2 Level AA)
+- Mobile usability (touch targets, thumb zones, responsive layout)
+- UX Score: XX/100
+
 ---
 
 ### PILLAR 3 — Authority & Off-Page
@@ -186,6 +220,27 @@ SEO Health Score is their weighted aggregate.
 - NAP consistency across directories
 - Review profile summary
 - Entity presence (Wikipedia, LinkedIn, YouTube)
+
+---
+
+### QUALITY ASSURANCE — Report Validation
+
+> This section is generated by `seo-validate` AFTER the audit is complete.
+> It does not contribute to the Health Score — it validates the score.
+
+**Report Confidence Score: XX/100**
+
+| Validation Check | Result |
+|-----------------|--------|
+| Findings re-verified | X of Y confirmed |
+| Score calculations | Consistent / Issues found |
+| Contradictions detected | X found |
+| Recommendations aligned | Yes / Gaps found |
+| Completeness | All areas covered / Gaps found |
+
+**Verdict:** ✅ PASS / ⚠️ PASS WITH CORRECTIONS / ❌ FAIL
+
+*If corrections were applied, they are noted here.*
 
 ---
 
