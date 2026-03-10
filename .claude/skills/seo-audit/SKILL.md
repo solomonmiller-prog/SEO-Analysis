@@ -14,12 +14,57 @@ description: >
 
 # Full Website SEO Audit
 
+## Environment Note — Python
+
+On this system, `python` is not in PATH. Use the full path:
+```
+PYTHON="/c/Users/smiller/AppData/Local/Programs/Python/Python312/python.exe"
+```
+All `PYTHON` references in this skill should be replaced with this path when
+executing commands. Example:
+```bash
+"$PYTHON" scripts/fetch_page.py https://example.com /tmp/out.html
+```
+
 ## Process
 
-1. **Fetch homepage** — use `scripts/fetch_page.py` to retrieve HTML
-2. **Detect business type** — analyze homepage signals per seo orchestrator
-3. **Crawl site** — follow internal links up to 500 pages, respect robots.txt
-4. **Delegate to subagents — Phase 1: Audit** (parallel where possible):
+### Pre-Flight Checklist (Step 0)
+
+Before spawning any subagents, verify the following. If any check fails,
+stop and report the blocker to the user rather than proceeding with partial data.
+
+1. **Site is fetchable** — run `PYTHON scripts/fetch_page.py <url> /tmp/<domain>_home.html`
+   and confirm a 200 response. If 403/timeout, retry with alternate UA (the script
+   handles this automatically with 3 retries and UA rotation).
+2. **CMS / platform detected** — inspect the homepage HTML for platform signatures:
+   - Duda: `class="dmBody"`, `FLAVOR: FLAVOR_FLAVOR_FLAVOR`, `dudaone.com` in scripts
+   - WordPress: `wp-content/`, `wp-includes/`, `<meta name="generator" content="WordPress"`
+   - Shopify: `cdn.shopify.com`, `Shopify.theme`
+   - Wix: `wix.com`, `X-Wix-` headers
+   - Squarespace: `squarespace.com`, `<meta name="generator" content="Squarespace"`
+   - Custom/Other: no known CMS signatures
+3. **robots.txt accessible** — fetch `/robots.txt` and note any `Disallow` rules
+   that affect crawling. The crawl script handles this automatically.
+4. **Page count estimated** — do a quick link extraction from the homepage to estimate
+   site size. For small sites (<20 pages), all pages can be fetched individually.
+   For larger sites, the crawler will handle discovery.
+
+If all checks pass, proceed to Step 1.
+
+---
+
+### Phase 1: Data Gathering
+
+1. **Crawl site** — run `PYTHON scripts/crawl_site.py <url> /tmp/crawl_<domain> --max-pages 500`
+   This produces:
+   - `/tmp/crawl_<domain>/crawl_manifest.json` — structured page inventory
+   - `/tmp/crawl_<domain>/pages/*.html` — raw HTML for each page
+   - `/tmp/crawl_<domain>/robots.txt` — cached robots.txt
+
+2. **Detect business type** — analyze homepage content, schema, and meta tags to
+   classify: local service, e-commerce, SaaS, publisher, agency, professional service, etc.
+
+3. **Delegate to subagents** (parallel where possible):
    - `seo-technical` — robots.txt, sitemaps, canonicals, Core Web Vitals, security headers
    - `seo-content` — E-E-A-T, readability, thin content, AI citation readiness
    - `seo-schema` — detection, validation, generation recommendations
@@ -27,16 +72,62 @@ description: >
    - `seo-performance` — LCP, INP, CLS measurements
    - `seo-visual` — screenshots, mobile testing, above-fold analysis
    - `seo-geo` — AI Overviews, ChatGPT/Perplexity visibility, llms.txt, GEO signals
-   - `seo-factcheck` — verify factual claims, measurements, statistics, and contextual accuracy
-   - `seo-ux` — navigation, visual hierarchy, CTAs, accessibility (WCAG 2.2 AA), mobile usability
-5. **Score** — aggregate into SEO Health Score (0-100)
-6. **Report** — generate prioritized action plan
-7. **Phase 2: Quality Assurance** (runs AFTER the report is drafted):
-   - `seo-validate` — independently re-checks a sample of findings against the live site, verifies score calculations, detects contradictions between report sections, and confirms recommendations align with actual issues found
-   - Produces a **Report Confidence Score** and a PASS / PASS WITH CORRECTIONS / FAIL verdict
-   - If FAIL: revise the report to fix identified issues before delivery
-   - If PASS WITH CORRECTIONS: apply the listed corrections, then deliver
-   - If PASS: report is ready for delivery
+   - `seo-factcheck` — **MANDATORY** — verify factual claims, measurements, statistics
+   - `seo-ux` — **MANDATORY** — navigation, visual hierarchy, CTAs, accessibility (WCAG 2.2 AA)
+
+   > **All 9 subagents must run.** Do not skip fact-check or UX analysis even under
+   > context pressure. If context is running low, prioritise completing these agents
+   > with reduced scope rather than skipping them entirely.
+
+4. **Score** — aggregate findings into SEO Health Score (0-100) using weighted formula.
+
+---
+
+### Phase 2: Report Generation
+
+5. **Generate markdown intermediaries** — before building the HTML report, write:
+   - `FULL-AUDIT-REPORT.md` — all findings consolidated by pillar
+   - `ACTION-PLAN.md` — prioritised recommendations (Critical > High > Medium > Low)
+   - `FACT-CHECK-REPORT.md` — fact-checking results with corrections table
+   - `UX-REPORT.md` — UX/UI analysis with accessibility findings
+
+   These intermediaries serve as a checkpoint that survives context compaction.
+   If context is compacted during HTML generation, the markdown files can be
+   re-read to reconstruct the report.
+
+6. **Generate HTML report** — build the Localsearch-branded HTML report from
+   the markdown findings using `_template/SEO-Audit-Template.html` as reference.
+
+---
+
+### Phase 3: Quality Assurance (MANDATORY)
+
+> **This phase is NOT optional.** Every audit must pass QA before delivery.
+
+7. **Run `seo-validate`** — independently re-checks a sample of findings against
+   the live site, verifies score calculations, detects contradictions between
+   report sections, and confirms recommendations align with actual issues found.
+
+8. **Apply verdict:**
+   - **PASS** — report is ready for delivery
+   - **PASS WITH CORRECTIONS** — apply listed corrections to the HTML report, then deliver
+   - **FAIL** — revise the report to fix identified issues, then re-validate
+
+9. **Write validation report** — save `VALIDATION-REPORT.md` with confidence score
+   and all verification results.
+
+---
+
+### Phase 4: Delivery
+
+10. **Generate PDF** — always generate a PDF as the final deliverable via Edge headless:
+    ```bash
+    "/c/Program Files (x86)/Microsoft/Edge/Application/msedge.exe" \
+      --headless --disable-gpu \
+      --print-to-pdf="OUTPUT.pdf" \
+      --print-to-pdf-no-header \
+      "file:///PATH/TO/report.html"
+    ```
 
 ## Platform-Specific Content Extraction
 
@@ -45,11 +136,21 @@ When measuring content depth/thin content, you MUST extract ALL visible text pat
 for the CMS platform in use. Different platforms render body text differently:
 
 - **Duda:** Uses BOTH `<span style="display: unset">` (headings/labels) AND
-  `<span style="display: initial">` (body paragraphs, FAQ answers). Grep for both:
-  `grep -o '<span[^>]*display: \(unset\|initial\)[^>]*>[^<]*</span>'`
+  `<span style="display: initial">` (body paragraphs, FAQ answers). Use grep with
+  POSIX-compatible syntax (no `-P` flag — it fails on Git Bash/Windows):
+  ```bash
+  grep -o '<span[^>]*display: \(unset\|initial\)[^>]*>[^<]*</span>' file.html
+  ```
   Failing to include `display: initial` will miss all body content and FAQ text.
 - **WordPress:** Extract from `<article>` or `<div class="entry-content">`.
 - **Shopify:** Extract from `<div class="rte">` or product containers.
+
+**IMPORTANT — grep Compatibility:**
+This toolkit runs on Git Bash (Windows). Do NOT use `grep -P` (PCRE mode) — it
+fails with "supports only unibyte and UTF-8 locales". Instead:
+- Use basic grep: `grep -o 'pattern'` with `\(alt1\|alt2\)` for alternation
+- Use extended grep: `grep -oE 'pattern'` with `(alt1|alt2)` for alternation
+- For complex patterns, use `python -c` or `sed` instead of grep -P
 
 **Always remove shared boilerplate LINES, not a flat word count:** Extract text from
 3+ different page types, find lines common to ALL using `comm -12` or `grep -vxF`,
@@ -59,25 +160,115 @@ then remove those exact lines before counting words. Do NOT use a flat word dedu
 **Always verify:** Spot-check at least one page by reading the full extracted text
 and confirming it matches what a user would see on the rendered page.
 
+## Duda-Specific Notes
+
+Duda sites often have these quirks that affect auditing:
+- **`<title>` tags are JS-rendered** — empty in source HTML. Extract `og:title`
+  meta property content instead, which is server-rendered.
+- **WebFetch tool may get 403s** — Duda's CDN blocks non-browser UAs. Use
+  `PYTHON scripts/fetch_page.py` or `curl -sL -A "Mozilla/5.0..."` instead.
+- **Schema is embedded in `<script type="application/ld+json">`** on homepage
+  only in many Duda sites — inner pages typically have zero structured data.
+
+## Scripts
+
+### `scripts/fetch_page.py`
+Fetches a single page with browser-like headers, UA rotation, and retry logic.
+
+```bash
+# Fetch to file
+PYTHON scripts/fetch_page.py https://example.com /tmp/example_home.html
+
+# Fetch to stdout
+PYTHON scripts/fetch_page.py https://example.com
+
+# Custom timeout and retries
+PYTHON scripts/fetch_page.py https://example.com /tmp/out.html --timeout 15 --retries 5
+```
+
+### `scripts/crawl_site.py`
+Crawls a website following internal links. Respects robots.txt, deduplicates
+URLs, and produces a structured JSON manifest with page metadata.
+
+```bash
+# Full crawl (up to 500 pages)
+PYTHON scripts/crawl_site.py https://example.com /tmp/crawl_example
+
+# Limited crawl
+PYTHON scripts/crawl_site.py https://example.com /tmp/crawl_example --max-pages 50
+
+# Slower crawl (polite mode)
+PYTHON scripts/crawl_site.py https://example.com /tmp/crawl_example --delay 2
+```
+
+**Output structure:**
+```
+/tmp/crawl_example/
+├── crawl_manifest.json    # Page inventory with metadata
+├── robots.txt             # Cached robots.txt
+└── pages/
+    ├── homepage.html
+    ├── about.html
+    ├── services.html
+    └── ...
+```
+
+**Manifest format:**
+```json
+{
+  "domain": "example.com",
+  "start_url": "https://example.com",
+  "pages_crawled": 15,
+  "pages_in_queue": 0,
+  "timestamp": "2026-03-10T14:30:00+1100",
+  "pages": [
+    {
+      "url": "https://example.com",
+      "final_url": "https://example.com",
+      "status": 200,
+      "slug": "homepage",
+      "file": "/tmp/crawl_example/pages/homepage.html",
+      "title": "Example Business",
+      "meta_description": "...",
+      "h1": ["Welcome to Example"],
+      "word_count": 1250,
+      "internal_links_found": 12
+    }
+  ]
+}
+```
+
 ## Crawl Configuration
 
 ```
 Max pages: 500
 Respect robots.txt: Yes
-Follow redirects: Yes (max 3 hops)
+Follow redirects: Yes (max 3 hops, handled by urllib)
 Timeout per page: 30 seconds
-Concurrent requests: 5
+Concurrent requests: 1 (sequential with delay)
 Delay between requests: 1 second
+Retries per page: 3 (with UA rotation on 403)
 ```
 
 ## Output Files
 
-- `FULL-AUDIT-REPORT.md` — Comprehensive findings (includes QA validation section)
-- `ACTION-PLAN.md` — Prioritized recommendations (Critical → High → Medium → Low)
-- `FACT-CHECK-REPORT.md` — Detailed fact-checking results with corrections table
+All output goes to `reports/<domain>/`:
+
+**Phase 1 — Markdown intermediaries (checkpoint files):**
+- `FULL-AUDIT-REPORT.md` — Comprehensive findings by pillar
+- `ACTION-PLAN.md` — Prioritised recommendations (Critical → High → Medium → Low)
+- `FACT-CHECK-REPORT.md` — Fact-checking results with corrections table
 - `UX-REPORT.md` — UX/UI analysis with accessibility findings
+- `GEO-ANALYSIS.md` — GEO visibility analysis
+- `visual-analysis.md` — Visual/screenshot analysis
+- `screenshots/` — Desktop + mobile captures
+
+**Phase 3 — QA output:**
 - `VALIDATION-REPORT.md` — Independent QA results with confidence score and verdict
-- `screenshots/` — Desktop + mobile captures (if Playwright available)
+
+**Phase 4 — Final deliverables:**
+- `SEO-Audit-Report.html` — Localsearch-branded HTML report
+- `SEO-Audit-Report.pdf` — PDF version (if requested)
 
 ## Scoring Weights
 
@@ -238,7 +429,7 @@ SEO Health Score is their weighted aggregate.
 | Recommendations aligned | Yes / Gaps found |
 | Completeness | All areas covered / Gaps found |
 
-**Verdict:** ✅ PASS / ⚠️ PASS WITH CORRECTIONS / ❌ FAIL
+**Verdict:** PASS / PASS WITH CORRECTIONS / FAIL
 
 *If corrections were applied, they are noted here.*
 
@@ -253,7 +444,7 @@ All issues from all three pillars combined and re-sorted by business impact:
 **Medium** (fix within 1 month — optimisation opportunity)
 **Low** (backlog — nice to have)
 
-Each issue tagged with its pillar (🔧 Technical / 📝 Content / 🔗 Authority)
+Each issue tagged with its pillar (Technical / Content / Authority)
 and owner (Dev / Content / Marketing) for easy team distribution.
 
 ## Priority Definitions
