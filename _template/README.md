@@ -30,16 +30,24 @@
 - **Cards:** 1px solid #ececec border, 12px radius, 16px padding
 - **Badges:** Pill-shaped (100px radius), 9px uppercase text, 600 weight
 - **Action items:** Left border accent (4px) colour-coded by priority
+- **Note cards:** Yellow left border (4px solid `--ls-yellow`) for contextual observations
+- **Green cards:** `card-green` (#e8f5e9 bg) for positive findings and projected outcomes
+- **Strengths/Weaknesses:** `flex-row` with two `flex-col` columns, green/red `h4` headers, `check-list` items
+- **Pillar headers:** Gradient rounded bar with icon box, nested `pillar-info` (h3 + p subtitle), score right-aligned
+
+### Report Sections (No Implementation Guide)
+The report does NOT include a detailed implementation guide — this keeps the PDF concise.
+The implementation guide can be generated separately if needed.
 
 ### Page Structure
 1. **Cover page** - Blue gradient, large score circle, pillar chip scores, meta cards
-2. **Executive summary** - 3 pillar cards + overall card (overall last/right), critical issues + quick wins
+2. **Executive summary** - 3 pillar cards + overall card (overall last/right), critical issues + quick wins (matching card format), site overview table
 3. **Pillar 1** (Technical) - Blue gradient header
 4. **Pillar 2** (Content) - Green/teal gradient header
 5. **Pillar 3** (Authority) - Purple gradient header
 6. **Scoring breakdown** - Weighted table
 7. **Action plan** - Priority-grouped action cards (Critical > High > Medium > Low)
-8. **Implementation guide** - Step-by-step how-to instructions, code snippets, timeline table, Localsearch CTA
+8. **Implementation timeline** - Phased roadmap, projected outcome card, Localsearch CTA
 
 ## Template Placeholders
 Replace `{{PLACEHOLDER}}` values:
@@ -121,47 +129,114 @@ Use Microsoft Edge headless:
 </div>
 ```
 
-### Implementation Guide Items
-Three variants for different content types:
-
-**Basic steps:**
+### Priority Tags (Implementation Guide)
+Used inline within implementation guide cards to show action priority.
 ```html
-<div class="subsection">
-  <h3>1. Guide Title (Action #X)</h3>
-  <div class="card no-break">
-    <div class="card-title mb-sm">Steps in {{PLATFORM}}</div>
-    <div class="card-body">
-      <ol style="padding-left: 16px; line-height: 1.8;">
-        <li>Step one</li>
-      </ol>
-    </div>
+<span class="priority-tag priority-critical">CRITICAL</span>
+<span class="priority-tag priority-high">HIGH</span>
+<span class="priority-tag priority-medium">MEDIUM</span>
+<span class="priority-tag priority-low">LOW</span>
+```
+
+CSS:
+```css
+.priority-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+.priority-critical { background: #c62828; color: white; }
+.priority-high { background: var(--ls-red); color: white; }
+.priority-medium { background: var(--ls-yellow); color: #4a4a4a; }
+.priority-low { background: var(--ls-blue-light); color: var(--ls-blue); }
+```
+
+### Card Variants
+```css
+.card       { background: var(--ls-white); border: 1px solid var(--ls-border); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+.card-blue  { background: var(--ls-blue-light); border-color: #d0d9ff; }   /* Implementation guide items */
+.card-green { background: #e8f5e9; border-color: #c8e6c9; }               /* Positive outcomes, verification */
+```
+
+### Implementation Guide Items
+Each action gets a `card card-blue` with priority tag, category/owner badges, h4 sub-headings, and content.
+
+**Standard structure:**
+```html
+<div class="card card-blue mb-md no-break">
+  <div class="card-title">Action #1 &mdash; Title Here</div>
+  <div class="card-body mt-sm">
+    <p>
+      <span class="priority-tag priority-critical" style="margin-right:6px;">CRITICAL</span>
+      <span class="badge badge-info">TECHNICAL</span>
+      <span class="badge" style="background:#f1f5f9;">DEV</span>
+    </p>
+
+    <h4>Background</h4>
+    <p>Why this matters...</p>
+
+    <h4>Steps</h4>
+    <ol style="padding-left: 16px; line-height: 1.8;">
+      <li>Step one</li>
+      <li>Step two</li>
+    </ol>
   </div>
 </div>
 ```
 
 **With code block** (schema, robots.txt, technical):
 ```html
-<div class="card no-break">
-  <div class="card-body">
-    <ol style="padding-left: 16px; line-height: 1.8;">
-      <li>Step one</li>
-      <li>Paste the following code:</li>
-    </ol>
-    <pre>Code here</pre>
-    <ol start="3" style="padding-left: 16px; line-height: 1.8;">
-      <li>Save and publish</li>
-    </ol>
+<div class="card card-blue mb-md no-break">
+  <div class="card-title">Action #3 &mdash; Fix Schema Errors</div>
+  <div class="card-body mt-sm">
+    <p><span class="priority-tag priority-critical" style="margin-right:6px;">CRITICAL</span> ...</p>
+    <h4>Current Issues</h4>
+    <ul style="padding-left: 16px; line-height: 1.8;"><li>Issue description</li></ul>
+    <h4>Corrected Code</h4>
+    <pre>{
+  "@context": "https://schema.org",
+  "@type": "Organization"
+}</pre>
   </div>
 </div>
 ```
 
 **With per-page table** (meta descriptions, H1s):
 ```html
-<div class="card no-break">
-  <div class="card-body">
+<div class="card card-blue mb-md no-break">
+  <div class="card-title">Action #5 &mdash; Add Meta Descriptions</div>
+  <div class="card-body mt-sm">
+    <p><span class="priority-tag priority-high" style="margin-right:6px;">HIGH</span> ...</p>
+    <h4>Steps</h4>
+    <ol style="padding-left: 16px; line-height: 1.8;">
+      <li>Open the CMS and navigate to the page</li>
+      <li>Add the meta description from the table below</li>
+    </ol>
     <p class="mt-sm" style="font-weight: 600;">Recommended text:</p>
     <table style="margin-top: 6px;">
-      <tr><td style="width: 120px; font-weight: 600;">Page</td><td>Text</td></tr>
+      <tr><td style="width: 120px; font-weight: 600;">Page</td><td>Meta Description</td></tr>
+    </table>
+  </div>
+</div>
+```
+
+### Verification Checklist
+Placed at the end of the implementation guide section. Uses `card-green`.
+```html
+<div class="card card-green mb-md no-break">
+  <div class="card-title" style="color: #2e7d32;">Post-Implementation Verification Checklist</div>
+  <div class="card-body mt-sm">
+    <table>
+      <thead><tr><th>#</th><th>Check</th><th>Command / Method</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Check description</td><td><code>curl command or manual method</code></td></tr>
+      </tbody>
     </table>
   </div>
 </div>

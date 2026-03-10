@@ -47,6 +47,7 @@
   }
 
   /* ===== COVER PAGE ===== */
+
   .cover-page {
     height: 100vh;
     display: flex;
@@ -165,7 +166,8 @@
     opacity: 0.8;
   }
 
-  /* ===== SECTION STYLES ===== */
+  /* ===== SECTION HEADERS ===== */
+
   .section-header {
     background: linear-gradient(135deg, var(--ls-blue) 0%, var(--ls-blue-mid) 100%);
     color: white;
@@ -185,6 +187,8 @@
     font-size: 11px;
     opacity: 0.85;
   }
+
+  /* ===== SUBSECTIONS ===== */
 
   .subsection {
     margin-bottom: 20px;
@@ -208,6 +212,7 @@
   }
 
   /* ===== SCORE CARDS ===== */
+
   .score-overview {
     display: flex;
     gap: 16px;
@@ -261,15 +266,16 @@
   .score-bar-fill {
     height: 100%;
     border-radius: 100px;
-    transition: width 0.5s ease;
   }
 
   .score-bar-fill.blue { background: var(--ls-blue); }
   .score-bar-fill.green { background: var(--ls-green); }
   .score-bar-fill.yellow { background: var(--ls-yellow); }
   .score-bar-fill.red { background: var(--ls-red); }
+  .score-bar-fill.purple { background: var(--ls-purple); }
 
   /* ===== TABLES ===== */
+
   table {
     width: 100%;
     border-collapse: collapse;
@@ -298,6 +304,7 @@
   tr:last-child td { border-bottom: none; }
 
   /* ===== BADGES ===== */
+
   .badge {
     display: inline-block;
     padding: 2px 8px;
@@ -318,6 +325,7 @@
   .badge-low { background: var(--ls-blue-light); color: var(--ls-blue); }
 
   /* ===== PRIORITY TAGS ===== */
+
   .priority-tag {
     display: inline-flex;
     align-items: center;
@@ -336,6 +344,7 @@
   .priority-low { background: var(--ls-blue-light); color: var(--ls-blue); }
 
   /* ===== CARDS ===== */
+
   .card {
     background: var(--ls-white);
     border: 1px solid var(--ls-border);
@@ -347,6 +356,11 @@
   .card-blue {
     background: var(--ls-blue-light);
     border-color: #d0d9ff;
+  }
+
+  .card-green {
+    background: #e8f5e9;
+    border-color: #c8e6c9;
   }
 
   .card-header {
@@ -369,6 +383,7 @@
   }
 
   /* ===== ACTION ITEMS ===== */
+
   .action-item {
     background: var(--ls-white);
     border: 1px solid var(--ls-border);
@@ -416,7 +431,8 @@
     font-size: 9.5px;
   }
 
-  /* ===== LISTS ===== */
+  /* ===== CHECK LISTS ===== */
+
   .check-list {
     list-style: none;
     padding: 0;
@@ -443,19 +459,24 @@
   .check-list li.warn::before { content: '\26A0'; color: #f57f17; font-size: 11px; }
 
   /* ===== CODE BLOCKS ===== */
+
   pre {
-    background: #1e1e2e;
-    color: #cdd6f4;
+    background: var(--ls-bg-light);
+    color: var(--ls-text);
     padding: 12px 14px;
     border-radius: 8px;
+    border: 1px solid var(--ls-border);
     font-family: 'Courier New', monospace;
     font-size: 9.5px;
     line-height: 1.5;
     overflow-x: auto;
     margin: 8px 0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
   }
 
-  /* ===== UTILITIES ===== */
+  /* ===== UTILITY CLASSES ===== */
+
   .text-blue { color: var(--ls-blue); }
   .text-red { color: var(--ls-red); }
   .text-green { color: var(--ls-green); }
@@ -486,6 +507,7 @@
   }
 
   /* ===== PAGE FOOTER ===== */
+
   .page-footer {
     text-align: center;
     padding: 20px 0 10px;
@@ -496,6 +518,7 @@
   }
 
   /* ===== PILLAR HEADERS ===== */
+
   .pillar-header {
     display: flex;
     align-items: center;
@@ -555,33 +578,6 @@
     font-size: 14px;
     font-weight: 400;
     opacity: 0.7;
-  }
-
-  /* ===== QUICK WIN CARDS ===== */
-  .quick-wins {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 16px;
-  }
-
-  .quick-win {
-    background: var(--ls-blue-light);
-    border-radius: 10px;
-    padding: 12px 14px;
-  }
-
-  .quick-win-num {
-    font-size: 18px;
-    font-weight: 800;
-    color: var(--ls-blue);
-    margin-bottom: 2px;
-  }
-
-  .quick-win-text {
-    font-size: 10.5px;
-    color: var(--ls-text);
-    font-weight: 500;
   }
 </style>
 </head>
@@ -651,7 +647,7 @@
   <p>Overall SEO health assessment with key findings and recommendations</p>
 </div>
 
-<!-- PILLAR SCORE CARDS (3 pillars + overall last) -->
+<!-- PILLAR SCORE CARDS -->
 <div class="score-overview">
   <div class="score-card">
     <div class="score-number text-blue">{{TECHNICAL_SCORE}}</div>
@@ -659,13 +655,13 @@
     <div class="score-bar"><div class="score-bar-fill blue" style="width: {{TECHNICAL_SCORE}}%"></div></div>
   </div>
   <div class="score-card">
-    <div class="score-number" style="color: var(--ls-green)">{{CONTENT_SCORE}}</div>
-    <div class="score-label">Content & On-Page</div>
+    <div class="score-number" style="color: var(--ls-green);">{{CONTENT_SCORE}}</div>
+    <div class="score-label">Content &amp; On-Page</div>
     <div class="score-bar"><div class="score-bar-fill green" style="width: {{CONTENT_SCORE}}%"></div></div>
   </div>
   <div class="score-card">
-    <div class="score-number" style="color: var(--ls-purple)">{{AUTHORITY_SCORE}}</div>
-    <div class="score-label">Authority & Off-Page</div>
+    <div class="score-number" style="color: var(--ls-purple);">{{AUTHORITY_SCORE}}</div>
+    <div class="score-label">Authority &amp; Off-Page</div>
     <div class="score-bar"><div class="score-bar-fill" style="width: {{AUTHORITY_SCORE}}%; background: var(--ls-purple)"></div></div>
   </div>
   <div class="score-card main">
@@ -674,397 +670,382 @@
   </div>
 </div>
 
-<!-- CRITICAL ISSUES + QUICK WINS (side by side) -->
-<div class="flex-row">
+<!-- TOP 5 CRITICAL ISSUES + QUICK WINS (matching card format) -->
+<div class="flex-row mb-md">
   <div class="flex-col">
-    <div class="card" style="border-left: 4px solid var(--ls-red);">
-      <div class="card-title mb-sm">Top 5 Critical Issues</div>
-      <ol style="padding-left: 16px; font-size: 10.5px; color: var(--ls-text-secondary); line-height: 1.7;">
-        <li><strong>{{ISSUE_1}}</strong></li>
-        <li><strong>{{ISSUE_2}}</strong></li>
-        <li><strong>{{ISSUE_3}}</strong></li>
-        <li><strong>{{ISSUE_4}}</strong></li>
-        <li><strong>{{ISSUE_5}}</strong></li>
-      </ol>
+    <div class="card" style="border-left: 4px solid #c62828;">
+      <div class="card-title" style="color: #c62828;">Top 5 Critical Issues</div>
+      <div class="card-body">
+        <ol style="padding-left: 16px; margin-top: 8px;">
+          <li style="margin-bottom: 4px;">{{ISSUE_1}}</li>
+          <li style="margin-bottom: 4px;">{{ISSUE_2}}</li>
+          <li style="margin-bottom: 4px;">{{ISSUE_3}}</li>
+          <li style="margin-bottom: 4px;">{{ISSUE_4}}</li>
+          <li style="margin-bottom: 4px;">{{ISSUE_5}}</li>
+        </ol>
+      </div>
     </div>
   </div>
   <div class="flex-col">
-    <div class="card card-blue">
-      <div class="card-title mb-sm" style="color: var(--ls-blue);">Top 5 Quick Wins</div>
-      <ol style="padding-left: 16px; font-size: 10.5px; color: var(--ls-text-secondary); line-height: 1.7;">
-        <li>{{WIN_1}}</li>
-        <li>{{WIN_2}}</li>
-        <li>{{WIN_3}}</li>
-        <li>{{WIN_4}}</li>
-        <li>{{WIN_5}}</li>
-      </ol>
+    <div class="card" style="border-left: 4px solid var(--ls-green);">
+      <div class="card-title" style="color: var(--ls-green);">Top 5 Quick Wins</div>
+      <div class="card-body">
+        <ol style="padding-left: 16px; margin-top: 8px;">
+          <li style="margin-bottom: 4px;">{{WIN_1}}</li>
+          <li style="margin-bottom: 4px;">{{WIN_2}}</li>
+          <li style="margin-bottom: 4px;">{{WIN_3}}</li>
+          <li style="margin-bottom: 4px;">{{WIN_4}}</li>
+          <li style="margin-bottom: 4px;">{{WIN_5}}</li>
+        </ol>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- SITE OVERVIEW TABLE -->
-<div class="card" style="margin-top: 4px;">
-  <div class="card-title mb-sm">Site Overview</div>
+<!-- SITE OVERVIEW -->
+<div class="subsection">
+  <h3>Site Overview</h3>
   <table>
-    <tr><td style="width: 140px; font-weight: 600;">Business Type</td><td>{{BUSINESS_TYPE}}</td></tr>
-    <tr><td style="font-weight: 600;">Location</td><td>{{LOCATION}}</td></tr>
-    <tr><td style="font-weight: 600;">Platform</td><td>{{PLATFORM}}</td></tr>
-    <tr><td style="font-weight: 600;">Pages in Sitemap</td><td>{{PAGES_COUNT}}</td></tr>
-    <tr><td style="font-weight: 600;">Phone</td><td>{{PHONE}}</td></tr>
-    <tr><td style="font-weight: 600;">Email</td><td>{{EMAIL}}</td></tr>
+    <tr><td style="font-weight:600; width:180px;">Business</td><td>{{BUSINESS_TYPE}}</td></tr>
+    <tr><td style="font-weight:600;">Location</td><td>{{LOCATION}}</td></tr>
+    <tr><td style="font-weight:600;">Website</td><td>{{DOMAIN}}</td></tr>
+    <tr><td style="font-weight:600;">Platform</td><td>{{PLATFORM}}</td></tr>
+    <tr><td style="font-weight:600;">Pages in Sitemap</td><td>{{PAGES_COUNT}}</td></tr>
+    <tr><td style="font-weight:600;">Phone</td><td>{{PHONE}}</td></tr>
+    <tr><td style="font-weight:600;">Email</td><td>{{EMAIL}}</td></tr>
   </table>
 </div>
 
 <!-- ==========================================================================
      PILLAR 1: TECHNICAL FOUNDATION
      ========================================================================== -->
-<div class="page-break"></div>
-
-<div class="pillar-header tech">
-  <div class="pillar-icon">&#9881;</div>
-  <div class="pillar-info">
-    <h3>Pillar 1 &mdash; Technical Foundation</h3>
-    <p>Crawlability, indexability, performance &amp; security</p>
+<div class="page-break">
+  <div class="pillar-header tech">
+    <div class="pillar-icon">&#9881;</div>
+    <div class="pillar-info">
+      <h3>Pillar 1 &mdash; Technical Foundation</h3>
+      <p>Crawlability, indexability, performance &amp; security</p>
+    </div>
+    <div class="pillar-score">{{TECHNICAL_SCORE}}<span>/100</span></div>
   </div>
-  <div class="pillar-score">{{TECHNICAL_SCORE}}<span>/100</span></div>
-</div>
 
-<!-- EXAMPLE: Crawlability check table -->
-<div class="subsection no-break">
-  <h3>Crawlability & Indexability</h3>
-  <table>
-    <thead>
-      <tr><th style="width: 200px;">Check</th><th style="width: 80px;">Status</th><th>Notes</th></tr>
-    </thead>
-    <tbody>
-      <!-- Use badge-pass, badge-warn, or badge-fail -->
-      <tr><td>robots.txt</td><td><span class="badge badge-pass">PASS</span></td><td>Description here</td></tr>
-      <tr><td>XML Sitemap</td><td><span class="badge badge-warn">PARTIAL</span></td><td>Description here</td></tr>
-      <tr><td>HTTPS</td><td><span class="badge badge-pass">PASS</span></td><td>Description here</td></tr>
-      <tr><td>Canonical Tags</td><td><span class="badge badge-pass">PASS</span></td><td>Description here</td></tr>
-    </tbody>
-  </table>
-</div>
+  <!-- Crawlability & Indexability -->
+  <div class="subsection no-break">
+    <h3>Crawlability &amp; Indexability</h3>
+    <table>
+      <thead><tr><th>Check</th><th>Status</th><th>Notes</th></tr></thead>
+      <tbody>
+        <!-- {{CRAWLABILITY_ROWS}} -->
+      </tbody>
+    </table>
+  </div>
 
-<!-- EXAMPLE: Security headers -->
-<div class="subsection no-break">
-  <h3>Security Headers</h3>
-  <table>
-    <thead>
-      <tr><th style="width: 250px;">Header</th><th style="width: 80px;">Status</th><th>Value</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>Strict-Transport-Security</td><td><span class="badge badge-pass">PASS</span></td><td>Value here</td></tr>
-    </tbody>
-  </table>
-</div>
+  <!-- Security Headers -->
+  <div class="subsection no-break">
+    <h3>Security Headers</h3>
+    <table>
+      <thead><tr><th>Header</th><th>Status</th><th>Value</th></tr></thead>
+      <tbody>
+        <!-- {{SECURITY_ROWS}} -->
+      </tbody>
+    </table>
+    <!-- Use card-green for excellent security, yellow-bordered card for issues -->
+  </div>
 
-<!-- EXAMPLE: Performance metrics -->
-<div class="subsection no-break">
-  <h3>Performance</h3>
-  <table>
-    <thead>
-      <tr><th>Metric</th><th>Value</th><th style="width: 80px;">Rating</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>Homepage HTML Size</td><td>XXX KB</td><td><span class="badge badge-fail">POOR</span></td></tr>
-    </tbody>
-  </table>
+  <!-- Performance -->
+  <div class="subsection no-break">
+    <h3>Performance &amp; Core Web Vitals Indicators</h3>
+    <table>
+      <thead><tr><th>Metric</th><th>Status</th><th>Notes</th></tr></thead>
+      <tbody>
+        <!-- {{PERFORMANCE_ROWS}} -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- JS Rendering & Mobile -->
+  <div class="subsection no-break">
+    <h3>JavaScript Rendering &amp; Mobile</h3>
+    <table>
+      <thead><tr><th>Check</th><th>Status</th><th>Notes</th></tr></thead>
+      <tbody>
+        <!-- {{MOBILE_ROWS}} -->
+      </tbody>
+    </table>
+  </div>
 </div>
 
 <!-- ==========================================================================
      PILLAR 2: CONTENT & ON-PAGE
      ========================================================================== -->
-<div class="page-break"></div>
-
-<div class="pillar-header content">
-  <div class="pillar-icon">&#9998;</div>
-  <div class="pillar-info">
-    <h3>Pillar 2 &mdash; Content & On-Page</h3>
-    <p>Title tags, meta descriptions, headings, schema, E-E-A-T &amp; images</p>
-  </div>
-  <div class="pillar-score">{{CONTENT_SCORE}}<span>/100</span></div>
-</div>
-
-<!-- EXAMPLE: Title tags table -->
-<div class="subsection no-break">
-  <h3>Title Tags</h3>
-  <table>
-    <thead>
-      <tr><th>Page</th><th>Title</th><th style="width: 50px;">Len</th><th style="width: 60px;">Rating</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>/</td><td>Page title here</td><td>XX</td><td><span class="badge badge-pass">GOOD</span></td></tr>
-    </tbody>
-  </table>
-</div>
-
-<!-- EXAMPLE: E-E-A-T strengths/weaknesses (side by side) -->
-<div class="subsection no-break">
-  <h3>Content Quality & E-E-A-T</h3>
-  <div class="flex-row">
-    <div class="flex-col">
-      <h4 style="color: var(--ls-green);">Strengths</h4>
-      <ul class="check-list">
-        <li class="pass">Strength item here</li>
-      </ul>
+<div class="page-break">
+  <div class="pillar-header content">
+    <div class="pillar-icon">&#9998;</div>
+    <div class="pillar-info">
+      <h3>Pillar 2 &mdash; Content &amp; On-Page</h3>
+      <p>Title tags, meta descriptions, headings, schema, E-E-A-T &amp; images</p>
     </div>
-    <div class="flex-col">
-      <h4 style="color: var(--ls-red);">Weaknesses</h4>
-      <ul class="check-list">
-        <li class="fail">Weakness item here</li>
-        <li class="warn">Warning item here</li>
-      </ul>
+    <div class="pillar-score">{{CONTENT_SCORE}}<span>/100</span></div>
+  </div>
+
+  <!-- On-Page SEO Elements -->
+  <div class="subsection">
+    <h3>On-Page SEO Elements</h3>
+    <table>
+      <thead><tr><th>Page</th><th>Title Tag</th><th>Meta Description</th><th>H1</th><th>Status</th></tr></thead>
+      <tbody>
+        <!-- {{ONPAGE_ROWS}} -->
+      </tbody>
+    </table>
+    <!-- Optional: critical finding note card -->
+  </div>
+
+  <!-- Content Depth -->
+  <div class="subsection">
+    <h3>Content Depth &amp; Thin Content Analysis</h3>
+    <table>
+      <thead><tr><th>Page</th><th>Approx. Words</th><th>Rating</th><th>Notes</th></tr></thead>
+      <tbody>
+        <!-- {{CONTENT_DEPTH_ROWS}} -->
+      </tbody>
+    </table>
+    <div class="card" style="border-left: 4px solid var(--ls-yellow); margin-top: 8px;">
+      <div class="card-body"><strong>Note:</strong> {{CONTENT_DEPTH_NOTE}}</div>
     </div>
   </div>
-</div>
 
-<!-- EXAMPLE: Schema table -->
-<div class="subsection no-break">
-  <h3>Schema & Structured Data</h3>
-  <table>
-    <thead>
-      <tr><th>Schema Type</th><th style="width: 80px;">Present?</th><th>Pages</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>WebSite</td><td><span class="badge badge-pass">YES</span></td><td>Homepage</td></tr>
-      <tr><td>LocalBusiness</td><td><span class="badge badge-fail">NO</span></td><td>&mdash;</td></tr>
-    </tbody>
-  </table>
+  <!-- Content Quality & E-E-A-T (Strengths / Weaknesses split) -->
+  <div class="subsection no-break">
+    <h3>Content Quality &amp; E-E-A-T</h3>
+    <div class="flex-row">
+      <div class="flex-col">
+        <h4 style="color: var(--ls-green);">Strengths</h4>
+        <ul class="check-list">
+          <!-- <li class="pass">Strength item</li> -->
+          <!-- {{EEAT_STRENGTHS}} -->
+        </ul>
+      </div>
+      <div class="flex-col">
+        <h4 style="color: var(--ls-red);">Weaknesses</h4>
+        <ul class="check-list">
+          <!-- <li class="fail">Failure item</li> -->
+          <!-- <li class="warn">Warning item</li> -->
+          <!-- {{EEAT_WEAKNESSES}} -->
+        </ul>
+      </div>
+    </div>
+    <div class="card" style="border-left: 4px solid var(--ls-yellow); margin-top: 8px;">
+      <div class="card-body"><strong>Note:</strong> {{EEAT_NOTE}}</div>
+    </div>
+  </div>
+
+  <!-- Schema & Structured Data -->
+  <div class="subsection">
+    <h3>Schema &amp; Structured Data</h3>
+    <table>
+      <thead><tr><th>Schema Type</th><th>Status</th><th>Notes</th></tr></thead>
+      <tbody>
+        <!-- {{SCHEMA_ROWS}} -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Images & Media -->
+  <div class="subsection">
+    <h3>Images &amp; Media</h3>
+    <table>
+      <thead><tr><th>Check</th><th>Status</th><th>Notes</th></tr></thead>
+      <tbody>
+        <!-- {{IMAGES_ROWS}} -->
+      </tbody>
+    </table>
+  </div>
 </div>
 
 <!-- ==========================================================================
      PILLAR 3: AUTHORITY & OFF-PAGE
      ========================================================================== -->
-<div class="page-break"></div>
-
-<div class="pillar-header authority">
-  <div class="pillar-icon">&#9733;</div>
-  <div class="pillar-info">
-    <h3>Pillar 3 &mdash; Authority & Off-Page</h3>
-    <p>Backlinks, AI search visibility, local signals &amp; brand presence</p>
+<div class="page-break">
+  <div class="pillar-header authority">
+    <div class="pillar-icon">&#9733;</div>
+    <div class="pillar-info">
+      <h3>Pillar 3 &mdash; Authority &amp; Off-Page</h3>
+      <p>Backlinks, AI search visibility, local signals &amp; brand presence</p>
+    </div>
+    <div class="pillar-score">{{AUTHORITY_SCORE}}<span>/100</span></div>
   </div>
-  <div class="pillar-score">{{AUTHORITY_SCORE}}<span>/100</span></div>
-</div>
 
-<!-- EXAMPLE: Checklist -->
-<div class="subsection no-break">
-  <h3>Backlink Profile & Link Equity</h3>
-  <ul class="check-list">
-    <li class="pass">Positive finding here</li>
-    <li class="fail">Negative finding here</li>
-    <li class="warn">Warning finding here</li>
-  </ul>
+  <!-- AI Search / GEO Visibility -->
+  <div class="subsection">
+    <h3>AI Search / GEO Visibility</h3>
+    <table>
+      <thead><tr><th>Check</th><th>Status</th><th>Notes</th></tr></thead>
+      <tbody>
+        <!-- {{GEO_ROWS}} -->
+      </tbody>
+    </table>
+    <div class="card" style="border-left: 4px solid var(--ls-yellow); margin-top: 8px;">
+      <div class="card-body"><strong>Note:</strong> {{GEO_NOTE}}</div>
+    </div>
+  </div>
+
+  <!-- Backlink & Authority Signals -->
+  <div class="subsection">
+    <h3>Backlink &amp; Authority Signals</h3>
+    <table>
+      <thead><tr><th>Check</th><th>Status</th><th>Notes</th></tr></thead>
+      <tbody>
+        <!-- {{BACKLINK_ROWS}} -->
+      </tbody>
+    </table>
+    <div class="card" style="border-left: 4px solid var(--ls-yellow); margin-top: 8px;">
+      <div class="card-body"><strong>Note:</strong> {{BACKLINK_NOTE}}</div>
+    </div>
+  </div>
+
+  <!-- Local & Brand Signals (local businesses) OR Hreflang (international sites) -->
+  <div class="subsection">
+    <h3>{{AUTHORITY_SUBSECTION_TITLE}}</h3>
+    <!-- For local businesses: use check-list with pass/fail/warn items -->
+    <!-- For international sites: use hreflang table -->
+    <!-- {{AUTHORITY_SUBSECTION_CONTENT}} -->
+  </div>
 </div>
 
 <!-- ==========================================================================
      SCORING BREAKDOWN
      ========================================================================== -->
-<div class="page-break"></div>
-
-<div class="section-header">
-  <h2>Scoring Breakdown</h2>
-  <p>Weighted sub-category scores across all three pillars</p>
-</div>
-
-<table>
-  <thead>
-    <tr><th>Pillar / Sub-category</th><th style="width: 60px;">Weight</th><th style="width: 60px;">Score</th><th style="width: 70px;">Weighted</th></tr>
-  </thead>
-  <tbody>
-    <tr style="background: var(--ls-blue-light);"><td colspan="4" style="font-weight: 700; color: var(--ls-blue);">Pillar 1 &mdash; Technical Foundation (35%)</td></tr>
-    <tr><td style="padding-left: 24px;">Crawlability & Indexability</td><td>15%</td><td>XX</td><td>X.X</td></tr>
-    <tr><td style="padding-left: 24px;">Performance (Core Web Vitals)</td><td>10%</td><td>XX</td><td>X.X</td></tr>
-    <tr><td style="padding-left: 24px;">Mobile & JS Rendering</td><td>10%</td><td>XX</td><td>X.X</td></tr>
-    <tr style="background: #e8f5e9;"><td colspan="4" style="font-weight: 700; color: var(--ls-green);">Pillar 2 &mdash; Content & On-Page (40%)</td></tr>
-    <tr><td style="padding-left: 24px;">Content Quality & E-E-A-T</td><td>15%</td><td>XX</td><td>X.X</td></tr>
-    <tr><td style="padding-left: 24px;">On-Page SEO</td><td>10%</td><td>XX</td><td>X.X</td></tr>
-    <tr><td style="padding-left: 24px;">Schema & Structured Data</td><td>8%</td><td>XX</td><td>X.X</td></tr>
-    <tr><td style="padding-left: 24px;">Images & Media</td><td>7%</td><td>XX</td><td>X.X</td></tr>
-    <tr style="background: #f3e5f5;"><td colspan="4" style="font-weight: 700; color: var(--ls-purple);">Pillar 3 &mdash; Authority & Off-Page (25%)</td></tr>
-    <tr><td style="padding-left: 24px;">Backlink Profile & Link Equity</td><td>12%</td><td>XX</td><td>X.X</td></tr>
-    <tr><td style="padding-left: 24px;">AI Search / GEO Visibility</td><td>8%</td><td>XX</td><td>X.X</td></tr>
-    <tr><td style="padding-left: 24px;">Local & Brand Signals</td><td>5%</td><td>XX</td><td>X.X</td></tr>
-    <tr style="border-top: 2px solid var(--ls-text); font-weight: 700;"><td>Overall SEO Health Score</td><td>100%</td><td colspan="2" style="font-size: 14px; color: var(--ls-blue);">{{OVERALL_SCORE}} / 100</td></tr>
-  </tbody>
-</table>
-
-<!-- ==========================================================================
-     ACTION PLAN
-     ========================================================================== -->
-<div class="page-break"></div>
-
-<div class="section-header" style="background: linear-gradient(135deg, #c62828 0%, #f16159 100%);">
-  <h2>Action Plan</h2>
-  <p>Prioritised recommendations &mdash; Critical &rarr; High &rarr; Medium &rarr; Low</p>
-</div>
-
-<!-- CRITICAL ITEMS -->
-<div style="margin-bottom: 8px;">
-  <span class="priority-tag priority-critical">CRITICAL &mdash; Fix Immediately</span>
-</div>
-
-<div class="action-item critical no-break">
-  <div class="action-header">
-    <div class="action-title">1. Action Title Here</div>
-    <div class="action-meta">
-      <!-- Pillar badge: badge-info (Content), or use custom colours for Authority -->
-      <span class="badge badge-info">Content & On-Page</span>
-      <!-- Owner badge -->
-      <span class="badge" style="background: var(--ls-bg-light);">Dev/Localsearch</span>
-    </div>
+<div class="page-break">
+  <div class="section-header">
+    <h2>Scoring Breakdown</h2>
+    <p>Weighted scoring across all audit categories</p>
   </div>
-  <div class="action-body">Description of the action item and why it matters.</div>
-</div>
 
-<!-- HIGH ITEMS -->
-<div style="margin-bottom: 8px; margin-top: 16px;">
-  <span class="priority-tag priority-high">HIGH &mdash; Fix Within 1 Week</span>
-</div>
-
-<div class="action-item high no-break">
-  <div class="action-header">
-    <div class="action-title">X. Action Title Here</div>
-    <div class="action-meta">
-      <span class="badge badge-info">Technical</span>
-      <span class="badge" style="background: var(--ls-bg-light);">Owner</span>
-    </div>
-  </div>
-  <div class="action-body">Description here.</div>
-</div>
-
-<!-- MEDIUM ITEMS -->
-<div style="margin-bottom: 8px; margin-top: 16px;">
-  <span class="priority-tag priority-medium">MEDIUM &mdash; Fix Within 1 Month</span>
-</div>
-
-<div class="action-item medium no-break">
-  <div class="action-header">
-    <div class="action-title">X. Action Title Here</div>
-    <div class="action-meta">
-      <span class="badge badge-info">Content & On-Page</span>
-      <span class="badge" style="background: var(--ls-bg-light);">Owner</span>
-    </div>
-  </div>
-  <div class="action-body">Description here.</div>
-</div>
-
-<!-- LOW ITEMS -->
-<div style="margin-bottom: 8px; margin-top: 16px;">
-  <span class="priority-tag priority-low">LOW &mdash; Backlog</span>
-</div>
-
-<div class="action-item low no-break">
-  <div class="action-header">
-    <div class="action-title">X. Action Title Here</div>
-    <div class="action-meta"><span class="badge badge-info">Technical</span></div>
-  </div>
-  <div class="action-body">Description here.</div>
-</div>
-
-<!-- ==========================================================================
-     IMPLEMENTATION GUIDE
-     ========================================================================== -->
-<div class="page-break"></div>
-
-<div class="section-header" style="background: linear-gradient(135deg, #1a3fcc 0%, #285aff 50%, #40A499 100%);">
-  <h2>Implementation Guide</h2>
-  <p>Step-by-step instructions for the highest-impact fixes</p>
-</div>
-
-<!-- GUIDE ITEM TEMPLATE — Repeat for each key fix -->
-<div class="subsection">
-  <h3>1. Guide Title (Action #X)</h3>
-  <div class="card no-break">
-    <div class="card-title mb-sm">Steps in {{PLATFORM}}</div>
-    <div class="card-body">
-      <ol style="padding-left: 16px; line-height: 1.8;">
-        <li>Step one</li>
-        <li>Step two</li>
-        <li>Step three</li>
-      </ol>
-    </div>
-  </div>
-</div>
-
-<!-- GUIDE ITEM WITH CODE BLOCK — Use for schema / robots.txt / technical fixes -->
-<div class="subsection">
-  <h3>2. Guide Title with Code (Action #X)</h3>
-  <div class="card no-break">
-    <div class="card-title mb-sm">Steps</div>
-    <div class="card-body">
-      <ol style="padding-left: 16px; line-height: 1.8;">
-        <li>Step one</li>
-        <li>Paste the following code:</li>
-      </ol>
-      <pre>Code block here</pre>
-      <ol start="3" style="padding-left: 16px; line-height: 1.8;">
-        <li>Save and publish</li>
-        <li>Validate at relevant tool</li>
-      </ol>
-    </div>
-  </div>
-</div>
-
-<!-- GUIDE ITEM WITH TABLE — Use for meta descriptions / H1 recommendations per page -->
-<div class="subsection">
-  <h3>3. Guide Title with Per-Page Recommendations (Action #X)</h3>
-  <div class="card no-break">
-    <div class="card-title mb-sm">Steps</div>
-    <div class="card-body">
-      <ol style="padding-left: 16px; line-height: 1.8;">
-        <li>Step one</li>
-        <li>Update each page with the recommended text below</li>
-      </ol>
-      <p class="mt-sm" style="font-weight: 600;">Recommended text:</p>
-      <table style="margin-top: 6px;">
-        <tr><td style="width: 120px; font-weight: 600;">Page Name</td><td>Recommended text here</td></tr>
-      </table>
-    </div>
-  </div>
-</div>
-
-<!-- IMPLEMENTATION TIMELINE -->
-<div class="subsection">
-  <h3>Implementation Timeline &amp; Expected Results</h3>
   <table>
-    <thead>
-      <tr><th style="width: 100px;">Timeline</th><th>Tasks</th><th style="width: 90px;">Expected Score</th></tr>
-    </thead>
+    <thead><tr><th>Pillar / Sub-Category</th><th>Weight</th><th>Raw Score</th><th>Weighted</th></tr></thead>
     <tbody>
-      <tr>
-        <td style="font-weight: 700;">Week 1</td>
-        <td>Critical fixes (Actions #1&ndash;5)</td>
-        <td style="font-weight: 700; color: var(--ls-blue); font-size: 14px;">XX&ndash;XX</td>
-      </tr>
-      <tr>
-        <td style="font-weight: 700;">Week 2&ndash;4</td>
-        <td>High &amp; medium priority fixes</td>
-        <td style="font-weight: 700; color: var(--ls-blue); font-size: 14px;">XX&ndash;XX</td>
-      </tr>
-      <tr>
-        <td style="font-weight: 700;">Month 2&ndash;3</td>
-        <td>Content strategy &amp; authority building</td>
-        <td style="font-weight: 700; color: var(--ls-blue); font-size: 14px;">XX&ndash;XX</td>
+      <tr style="background: var(--ls-blue-light);"><td><strong>Pillar 1 &mdash; Technical Foundation</strong></td><td><strong>35%</strong></td><td><strong>{{TECHNICAL_SCORE}}</strong></td><td><strong>{{TECH_WEIGHTED}}</strong></td></tr>
+      <tr><td>&nbsp;&nbsp;&nbsp;Crawlability &amp; Indexability</td><td>15%</td><td>{{CRAWL_SCORE}}</td><td>{{CRAWL_WEIGHTED}}</td></tr>
+      <tr><td>&nbsp;&nbsp;&nbsp;Performance (Core Web Vitals)</td><td>10%</td><td>{{PERF_SCORE}}</td><td>{{PERF_WEIGHTED}}</td></tr>
+      <tr><td>&nbsp;&nbsp;&nbsp;Mobile &amp; JS Rendering</td><td>10%</td><td>{{MOBILE_SCORE}}</td><td>{{MOBILE_WEIGHTED}}</td></tr>
+
+      <tr style="background: #e8f5e9;"><td><strong>Pillar 2 &mdash; Content &amp; On-Page</strong></td><td><strong>40%</strong></td><td><strong>{{CONTENT_SCORE}}</strong></td><td><strong>{{CONTENT_WEIGHTED}}</strong></td></tr>
+      <tr><td>&nbsp;&nbsp;&nbsp;Content Quality &amp; E-E-A-T</td><td>15%</td><td>{{EEAT_SCORE}}</td><td>{{EEAT_WEIGHTED}}</td></tr>
+      <tr><td>&nbsp;&nbsp;&nbsp;On-Page SEO</td><td>10%</td><td>{{ONPAGE_SCORE}}</td><td>{{ONPAGE_WEIGHTED}}</td></tr>
+      <tr><td>&nbsp;&nbsp;&nbsp;Schema &amp; Structured Data</td><td>8%</td><td>{{SCHEMA_SCORE}}</td><td>{{SCHEMA_WEIGHTED}}</td></tr>
+      <tr><td>&nbsp;&nbsp;&nbsp;Images &amp; Media</td><td>7%</td><td>{{IMAGES_SCORE}}</td><td>{{IMAGES_WEIGHTED}}</td></tr>
+
+      <tr style="background: #f3e5f5;"><td><strong>Pillar 3 &mdash; Authority &amp; Off-Page</strong></td><td><strong>25%</strong></td><td><strong>{{AUTHORITY_SCORE}}</strong></td><td><strong>{{AUTH_WEIGHTED}}</strong></td></tr>
+      <tr><td>&nbsp;&nbsp;&nbsp;Backlink Profile &amp; Link Equity</td><td>12%</td><td>{{BACKLINK_SCORE}}</td><td>{{BACKLINK_WEIGHTED}}</td></tr>
+      <tr><td>&nbsp;&nbsp;&nbsp;AI Search / GEO Visibility</td><td>8%</td><td>{{GEO_SCORE}}</td><td>{{GEO_WEIGHTED}}</td></tr>
+      <tr><td>&nbsp;&nbsp;&nbsp;Local &amp; Brand Signals</td><td>5%</td><td>{{LOCAL_SCORE}}</td><td>{{LOCAL_WEIGHTED}}</td></tr>
+
+      <tr style="background: var(--ls-bg-light); font-weight: 700; font-size: 12px;">
+        <td><strong>OVERALL SEO HEALTH SCORE</strong></td>
+        <td><strong>100%</strong></td>
+        <td></td>
+        <td><strong style="font-size: 18px; color: var(--ls-blue);">{{OVERALL_SCORE}} / 100</strong></td>
       </tr>
     </tbody>
   </table>
 </div>
 
-<!-- NEED HELP CTA -->
-<div class="card no-break" style="border-left: 4px solid var(--ls-blue); margin-top: 16px;">
-  <div class="card-title mb-sm" style="color: var(--ls-blue);">Need Help Implementing These Changes?</div>
-  <div class="card-body" style="line-height: 1.8;">
-    Localsearch can handle the full implementation for you &mdash; from technical fixes and schema markup to content writing and ongoing SEO management. Contact your Localsearch representative to discuss a tailored plan for your business.
+<!-- ==========================================================================
+     ACTION PLAN
+     ========================================================================== -->
+<div class="page-break">
+  <div class="section-header" style="background: linear-gradient(135deg, #c62828 0%, #f16159 100%);">
+    <h2>Action Plan</h2>
+    <p>Prioritised recommendations &mdash; Critical &rarr; High &rarr; Medium &rarr; Low</p>
+  </div>
+
+  <!-- CRITICAL -->
+  <h3 class="mb-sm" style="color: #c62828;">Critical &mdash; Fix Immediately</h3>
+
+  <!--
+  <div class="action-item critical no-break">
+    <div class="action-header">
+      <div class="action-title">1. Action title</div>
+      <div class="action-meta">
+        <span class="priority-tag priority-critical">CRITICAL</span>
+        <span class="badge badge-info">TECHNICAL</span>
+        <span class="badge" style="background:#f1f5f9;">DEV</span>
+      </div>
+    </div>
+    <div class="action-body">Description of the issue and recommended fix.</div>
+  </div>
+  -->
+
+  <!-- HIGH -->
+  <h3 class="mb-sm mt-md" style="color: var(--ls-red);">High &mdash; Fix Within 1 Week</h3>
+  <!-- action-item high no-break blocks -->
+
+  <!-- MEDIUM -->
+  <h3 class="mb-sm mt-md" style="color: #1d4ed8;">Medium &mdash; Fix Within 1 Month</h3>
+  <!-- action-item medium no-break blocks -->
+
+  <!-- LOW -->
+  <h3 class="mb-sm mt-md" style="color: var(--ls-blue);">Low &mdash; Backlog</h3>
+  <!-- action-item low no-break blocks -->
+</div>
+
+<!-- ==========================================================================
+     IMPLEMENTATION TIMELINE
+     ========================================================================== -->
+<div class="page-break">
+  <div class="section-header">
+    <h2>Implementation Timeline &amp; Expected Results</h2>
+    <p>Phased roadmap with projected score improvements</p>
+  </div>
+
+  <table>
+    <thead><tr><th>Timeline</th><th>Tasks</th><th>Expected Score</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>Week 1</strong></td>
+        <td><!-- Critical fixes --></td>
+        <td><strong>{{WEEK1_SCORE}}</strong></td>
+      </tr>
+      <tr>
+        <td><strong>Week 2</strong></td>
+        <td><!-- High-priority fixes --></td>
+        <td><strong>{{WEEK2_SCORE}}</strong></td>
+      </tr>
+      <tr>
+        <td><strong>Weeks 3&ndash;4</strong></td>
+        <td><!-- Medium-priority content & schema --></td>
+        <td><strong>{{WEEK34_SCORE}}</strong></td>
+      </tr>
+      <tr>
+        <td><strong>Month 2&ndash;3</strong></td>
+        <td><!-- Remaining medium & low items --></td>
+        <td><strong>{{MONTH23_SCORE}}</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="card card-green mt-md">
+    <div class="card-title" style="color: #2e7d32;">Projected Outcome</div>
+    <div class="card-body">
+      {{PROJECTED_OUTCOME}}
+    </div>
+  </div>
+
+  <!-- NEED HELP CTA -->
+  <div class="card no-break" style="border-left: 4px solid var(--ls-blue); margin-top: 16px;">
+    <div class="card-title mb-sm" style="color: var(--ls-blue);">Need Help Implementing These Changes?</div>
+    <div class="card-body" style="line-height: 1.8;">
+      Localsearch can handle the full implementation for you &mdash; from technical fixes and schema markup to content writing and ongoing SEO management. Contact your Localsearch representative to discuss a tailored plan for your business.
+    </div>
   </div>
 </div>
 
 <!-- ==========================================================================
-     REPORT FOOTER
+     FOOTER
      ========================================================================== -->
 <div class="page-footer">
-  <p><strong>Localsearch</strong> | SEO Audit Report | {{DOMAIN}} | {{AUDIT_DATE}}</p>
-  <p style="margin-top: 4px;">This report was generated using automated crawling and manual analysis. Findings are based on publicly accessible data at time of audit.</p>
+  <p><strong>Localsearch</strong> | SEO Audit Report | {{CLIENT_NAME}} ({{DOMAIN}}) | {{AUDIT_DATE}}</p>
+  <p style="margin-top: 6px;">This report is confidential and intended for the recipient only. Generated using automated analysis tools &mdash; manual verification of specific findings is recommended before implementation.</p>
 </div>
 
 </body>
