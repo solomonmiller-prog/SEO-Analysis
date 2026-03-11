@@ -164,6 +164,66 @@ def extract_gbp_data(page):
         except Exception:
             pass
 
+    # Method 4: Extract review count from F7nice container text (e.g. "4.9(32)")
+    # Google sometimes renders rating and review count as adjacent text nodes
+    # within div.F7nice without clear aria-labels on the review count element.
+    if result["review_count"] == 0:
+        try:
+            for selector in [
+                f'{PANEL_SCOPE} div.F7nice',
+                f'{PANEL_SCOPE} .fontBodyMedium div.F7nice',
+            ]:
+                el = page.query_selector(selector)
+                if el:
+                    full_text = el.inner_text().strip()
+                    # Match patterns like "4.9(32)" or "4.9 (32)" or "4.9\n(32)"
+                    match = re.search(r'\((\d[\d,]*)\)', full_text)
+                    if match:
+                        result["review_count"] = int(match.group(1).replace(',', ''))
+                        print(f"[check_gbp] Reviews from F7nice container: '{full_text}'", file=sys.stderr)
+                        break
+        except Exception:
+            pass
+
+    # Method 5: Scan all spans inside the panel for "(NN)" pattern near the rating
+    if result["review_count"] == 0:
+        try:
+            spans = page.query_selector_all(f'{PANEL_SCOPE} span')
+            for span in spans:
+                text = span.inner_text().strip()
+                # Look for "(32)" or "(1,234)" style review counts
+                match = re.match(r'^\((\d[\d,]*)\)$', text)
+                if match:
+                    count = int(match.group(1).replace(',', ''))
+                    if count >= 1:
+                        result["review_count"] = count
+                        print(f"[check_gbp] Reviews from span scan: '{text}'", file=sys.stderr)
+                        break
+        except Exception:
+            pass
+
+    # Method 6: Full text scan of the panel for review count patterns
+    if result["review_count"] == 0:
+        try:
+            panel = page.query_selector(PANEL_SCOPE)
+            if panel:
+                panel_text = panel.inner_text()
+                # Look for "NN reviews" or "(NN)" near a rating-like number
+                # Find all "(NN)" occurrences
+                for match in re.finditer(r'\((\d[\d,]+)\)', panel_text):
+                    count = int(match.group(1).replace(',', ''))
+                    # Sanity check: review count should be >= 1 and < 1M
+                    if 1 <= count < 1000000:
+                        # Check that a rating-like number (X.X) appears nearby (within 20 chars before)
+                        start = max(0, match.start() - 20)
+                        context = panel_text[start:match.start()]
+                        if re.search(r'\d\.\d', context):
+                            result["review_count"] = count
+                            print(f"[check_gbp] Reviews from panel text scan: {count} (context: '{context.strip()}')", file=sys.stderr)
+                            break
+        except Exception:
+            pass
+
     # Address
     try:
         for selector in ['button[data-item-id="address"] div.fontBodyMedium',
