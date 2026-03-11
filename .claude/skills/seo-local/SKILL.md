@@ -19,6 +19,24 @@ Local SEO is distinct from traditional organic SEO. The local pack (Google Maps
 3-pack) is driven by a separate algorithm with different ranking signals.
 This skill covers both local pack ranking and organic local landing pages.
 
+## GBP Data Extraction
+
+Google Maps is fully JS-rendered — standard HTTP fetching cannot access review counts, ratings, or listing details. Use the Playwright-based script:
+
+```bash
+PYTHON="/c/Users/smiller/AppData/Local/Programs/Python/Python312/python.exe"
+
+# By direct Google Maps place URL (most reliable):
+"$PYTHON" scripts/check_gbp.py --url "https://www.google.com/maps/place/..."
+
+# By search query:
+"$PYTHON" scripts/check_gbp.py "Business Name Suburb State"
+```
+
+**Output:** JSON with `business_name`, `rating`, `review_count`, `address`, `phone`, `website`, `category`, `reviews[]`.
+
+**Tip:** Find the Google Maps place URL first via WebSearch (`"business name" "suburb" site:google.com/maps`), then pass it with `--url` for reliable extraction.
+
 ## Local Pack vs Organic: Two Separate Systems
 
 | Factor | Local Pack (Maps) | Local Organic |

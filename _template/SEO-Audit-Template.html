@@ -32,6 +32,8 @@
     line-height: 1.5;
     font-size: 11px;
     background: var(--ls-white);
+    padding-left: 24px;
+    padding-right: 24px;
   }
 
   @page {
@@ -40,7 +42,7 @@
   }
 
   @media print {
-    body { font-size: 10px; }
+    body { font-size: 10px; padding-left: 0; padding-right: 0; }
     .page-break { page-break-before: always; }
     .no-break { page-break-inside: avoid; }
     .cover-page { page-break-after: always; }
